@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Category-->
+    <string name="category_all">전체</string>
+    <string name="category_field_all">분야</string>
+    <string name="category_android">Android</string>
+    <string name="category_ios">IOS</string>
+    <string name="category_web">WEB</string>
+    <string name="category_back">Backend</string>
+
+    <string name="category_all_type">전체</string>
+    <string name="category_field_all_type">분야</string>
+    <string name="category_android_type">Android</string>
+    <string name="category_ios_type">IOS</string>
+    <string name="category_web_type">WEB</string>
+    <string name="category_back_type">Backend</string>
+
+
+
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="category_year_all">경력</string>
+    <string name="category_new">신입</string>
+    <string name="category_2to3">2~3년차</string>
+    <string name="category_4to5">4~5년차</string>
+    <string name="category_5">5년차 이상</string>
+
+    <string name="category_year_all_type">경력</string>
+    <string name="category_new_type">신입</string>
+    <string name="category_2to3_type">2~3년차</string>
+    <string name="category_4to5_type">4~5년차</string>
+    <string name="category_5_type">5년차 이상</string>
+
+</resources>

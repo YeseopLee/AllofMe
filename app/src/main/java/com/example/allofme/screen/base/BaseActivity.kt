@@ -9,7 +9,7 @@ abstract class BaseActivity<VM: BaseViewModel, VB: ViewBinding>:AppCompatActivit
 
     abstract val viewModel: VM
 
-    private lateinit var binding: VB
+    protected lateinit var binding: VB
 
     abstract fun getViewBinding() : VB
 
