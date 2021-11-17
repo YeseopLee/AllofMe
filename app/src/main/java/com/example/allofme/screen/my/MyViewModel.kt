@@ -1,4 +1,6 @@
 package com.example.allofme.screen.my
 
-class MyViewModel {
+import com.example.allofme.screen.base.BaseViewModel
+
+class MyViewModel: BaseViewModel() {
 }

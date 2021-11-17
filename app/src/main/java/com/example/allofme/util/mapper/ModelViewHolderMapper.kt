@@ -28,7 +28,5 @@ object ModelViewHolderMapper {
             )
         }
         return viewHolder as ModelViewHolder<M>
-
     }
-
 }
