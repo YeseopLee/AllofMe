@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "554246549323",
+    "project_id": "allofme-dfe51",
+    "storage_bucket": "allofme-dfe51.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:554246549323:android:28272ca014f24208ff42ce",
+        "android_client_info": {
+          "package_name": "com.example.allofme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "554246549323-uv1llt6cn4tao383ftr9re1tkd4enatn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.allofme",
+            "certificate_hash": "9f97269a90f43ed2dcc78b61449e466761e5c814"
+          }
+        },
+        {
+          "client_id": "554246549323-qocva7ke0tfc9ivprk8uopog2j8staea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTfw6Y--qekrzCUodciOMujaJUsuTJ8ZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "554246549323-qocva7ke0tfc9ivprk8uopog2j8staea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

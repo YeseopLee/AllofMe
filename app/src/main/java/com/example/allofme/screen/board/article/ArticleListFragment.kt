@@ -33,7 +33,7 @@ class ArticleListFragment: BaseFragment<ArticleListViewModel, FragmentArticleLis
             resourcesProvider,
             adapterListener = object : BoardListListener {
                 override fun onClickItem(model: BoardListModel) {
-                    Toast.makeText(requireContext(),model.toEntity().toString(),Toast.LENGTH_SHORT).show()
+                    //
                 }
             }
         )

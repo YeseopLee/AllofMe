@@ -14,9 +14,6 @@ class BoardViewHolder(
     resourcesProvider: ResourcesProvider
 ): ModelViewHolder<BoardListModel>(binding, viewModel, resourcesProvider) {
 
-    override fun reset() = with(binding) {
-
-    }
 
     override fun bindViews(model: BoardListModel, adapterListener: AdapterListener) = with(binding) {
         if(adapterListener is BoardListListener) {
@@ -35,6 +32,10 @@ class BoardViewHolder(
             fieldChip.text = resourcesProvider.getString(model.field.categoryNameId)
             yearChip.text = resourcesProvider.getString(model.year.categoryNameId)
         }
+    }
+
+    override fun reset() {
+
     }
 
 }
