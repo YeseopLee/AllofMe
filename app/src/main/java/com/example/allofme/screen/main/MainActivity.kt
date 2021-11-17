@@ -5,6 +5,7 @@ import com.example.allofme.R
 import com.example.allofme.databinding.ActivityMainBinding
 import com.example.allofme.screen.board.BoardFragment
 import com.example.allofme.screen.base.BaseActivity
+import com.example.allofme.screen.my.MyFragment
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
@@ -31,7 +32,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
                     true
                 }
                 R.id.menu_my -> {
-                    false
+                    showFragment(MyFragment.newInstance(), MyFragment.TAG)
+                    true
                 }
                 else -> false
             }
