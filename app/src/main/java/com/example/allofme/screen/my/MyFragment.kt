@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import com.example.allofme.R
 import com.example.allofme.databinding.FragmentMyBinding
 import com.example.allofme.screen.base.BaseFragment
+import com.example.allofme.util.load
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -73,6 +74,7 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
         profileGroup.isVisible = true
         loginRequiredGroup.isGone = true
         userNameTextView.text = state.userName
+        profileImageView.load(state.profileImageUri.toString())
     }
 
     private fun handleLoadingState() = with(binding) {
