@@ -2,7 +2,9 @@ package com.example.allofme.screen.board.postArticle
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.example.allofme.databinding.ActivityPostArticleBinding
+import com.example.allofme.model.CellType
 import com.example.allofme.model.board.post.PostArticleModel
 import com.example.allofme.screen.base.BaseActivity
 import com.example.allofme.screen.provider.ResourcesProvider
@@ -23,12 +25,24 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
         recyclerView.adapter = testAdapter
 
         floatbtn1.setOnClickListener {
-            viewModel.editTextCount += 1
+            viewModel._postArticleLiveData.add(
+                PostArticleModel(
+                    id = viewModel.viewHolderCount.toLong(),
+                    type = CellType.ARTICLE_EDIT_CELL
+                )
+            )
+            viewModel._postArticleLiveData.add(
+                PostArticleModel(
+                    id = viewModel.viewHolderCount.toLong() + 1,
+                    type = CellType.ARTICLE_IMAGE_CELL,
+                )
+            )
+            viewModel.viewHolderCount += 2
+            recyclerView.setItemViewCacheSize(viewModel.viewHolderCount) // 이미 생성됏지만 스크롤하여 사라진 viewholder를, 다시 나타날 때 다시 만드는것이 아니라 cache에 저장후 사용하게 해준다.
+            viewModel.fetchData()
         }
 
-        floatbtn2.setOnClickListener {
-            viewModel.imageViewCount += 1
-        }
+
     }
 
     private val testAdapter by lazy {
@@ -46,7 +60,7 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
     }
 
 
-    override fun observeData() = viewModel.editTextLiveData.observe(this) {
+    override fun observeData() = viewModel.postArticleLiveData.observe(this) {
         testAdapter.submitList(it)
     }
 

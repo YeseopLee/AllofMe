@@ -1,5 +1,6 @@
 package com.example.allofme.screen.board.postArticle
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.allofme.model.CellType
@@ -10,25 +11,15 @@ import kotlinx.coroutines.launch
 
 class PostArticleViewModel: BaseViewModel() {
 
-    val editTextLiveData = MutableLiveData<List<PostArticleModel>>()
+    val postArticleLiveData = MutableLiveData<List<PostArticleModel>>()
+    var _postArticleLiveData = ArrayList<PostArticleModel>()
 
-    var editTextCount = 0
-    var imageViewCount = 0
+    var viewHolderCount = 0
 
     override fun fetchData(): Job = viewModelScope.launch {
 
-        editTextLiveData.value = listOf(
-            PostArticleModel(
-                id = 0,
-                type = CellType.ARTICLE_EDIT_CELL,
-                text = "??"
-            ),
-            PostArticleModel(
-                id = 1,
-                type = CellType.ARTICLE_IMAGE_CELL,
-                text = "???"
-            )
-        )
+        postArticleLiveData.value = _postArticleLiveData.toList().sortedBy { it.id }
+        // 항상 고정으로 sort해야 하기 떄문에 별도의 count value를 사용하여 정렬하였음.
 
     }
 

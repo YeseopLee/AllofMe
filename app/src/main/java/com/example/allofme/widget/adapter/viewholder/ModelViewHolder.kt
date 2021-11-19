@@ -1,5 +1,7 @@
 package com.example.allofme.widget.adapter.viewholder
 
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.allofme.model.Model
@@ -20,5 +22,10 @@ abstract class ModelViewHolder<M: Model>(
     }
 
     abstract fun bindViews(model: M, adapterListener: AdapterListener)
+
+    open fun addTextWatcher(model: M) {
+
+    }
+
 
 }
