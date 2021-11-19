@@ -1,8 +1,8 @@
 package com.example.allofme.data.repository.board.article
 
 import com.example.allofme.data.entity.ArticleListEntity
-import com.example.allofme.screen.board.article.FieldCategory
-import com.example.allofme.screen.board.article.YearCategory
+import com.example.allofme.screen.board.articlelist.FieldCategory
+import com.example.allofme.screen.board.articlelist.YearCategory
 import com.example.allofme.screen.provider.ResourcesProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext

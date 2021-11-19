@@ -1,6 +1,5 @@
-package com.example.allofme.screen.board.article
+package com.example.allofme.screen.board.articlelist
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.allofme.data.repository.board.article.ArticleListRepository

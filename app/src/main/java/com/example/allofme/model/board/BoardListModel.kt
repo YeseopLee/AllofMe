@@ -4,8 +4,8 @@ import android.net.Uri
 import com.example.allofme.data.entity.ArticleListEntity
 import com.example.allofme.model.CellType
 import com.example.allofme.model.Model
-import com.example.allofme.screen.board.article.FieldCategory
-import com.example.allofme.screen.board.article.YearCategory
+import com.example.allofme.screen.board.articlelist.FieldCategory
+import com.example.allofme.screen.board.articlelist.YearCategory
 
 data class BoardListModel (
     override val id: Long,

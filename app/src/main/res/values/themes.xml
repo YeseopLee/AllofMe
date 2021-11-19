@@ -1,6 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.AllofMe" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="toolbarStyle">@style/Widget.AllofMe.Toolbar</item>
+        <item name="toolbarWithArrowButtonStyle">@style/Widget.AllofMe.Toolbar.WithArrow</item>
+        <item name="toolbarWithCloseButtonStyle">@style/Widget.AllofMe.Toolbar.WithClose</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/gray_200</item>
         <item name="colorPrimaryVariant">@color/gray_140</item>
@@ -12,5 +15,12 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="AppTheme.AppbarOverlay" parent="Theme.AllofMe">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/black</item>
+        <item name="android:background">@null</item>
+
     </style>
 </resources>

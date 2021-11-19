@@ -1,7 +1,5 @@
-package com.example.allofme.screen.board.article
+package com.example.allofme.screen.board.articlelist
 
-import android.util.Log
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import com.example.allofme.databinding.FragmentArticleListBinding
 import com.example.allofme.model.board.BoardListModel

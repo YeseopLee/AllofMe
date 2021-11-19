@@ -1,4 +1,4 @@
-package com.example.allofme.screen.board.article
+package com.example.allofme.screen.board.articlelist
 
 import androidx.annotation.StringRes
 import com.example.allofme.R

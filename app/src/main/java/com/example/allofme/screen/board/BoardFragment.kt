@@ -1,14 +1,13 @@
 package com.example.allofme.screen.board
 
-import android.app.Activity
 import android.util.Log
-import androidx.activity.result.contract.ActivityResultContracts
 import com.example.allofme.R
 import com.example.allofme.databinding.FragmentBoardBinding
 import com.example.allofme.screen.base.BaseFragment
-import com.example.allofme.screen.board.article.ArticleListFragment
-import com.example.allofme.screen.board.article.FieldCategory
-import com.example.allofme.screen.board.article.YearCategory
+import com.example.allofme.screen.board.articlelist.ArticleListFragment
+import com.example.allofme.screen.board.articlelist.FieldCategory
+import com.example.allofme.screen.board.articlelist.YearCategory
+import com.example.allofme.screen.board.postArticle.PostArticleActivity
 import com.example.allofme.widget.adapter.ArticleListFragmentPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -43,6 +42,10 @@ class BoardFragment: BaseFragment<BoardViewModel,FragmentBoardBinding>() {
                     chipChange(YearCategory.FIVE)
                 }
             }
+        }
+
+        postArticleButton.setOnClickListener {
+            startActivity(PostArticleActivity.newIntent(requireContext()))
         }
 
     }

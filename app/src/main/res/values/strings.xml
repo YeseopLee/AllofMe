@@ -15,5 +15,6 @@
     <string name="need_login">로그인이 필요합니다</string>
     <string name="logout">로그아웃</string>
     <string name="update_my_article">내 포트폴리오 수정하기</string>
+    <string name="post_article">글 쓰기</string>
 
 </resources>
