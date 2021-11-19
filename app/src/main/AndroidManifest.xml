@@ -12,6 +12,9 @@
         android:theme="@style/Theme.AllofMe"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".screen.board.postArticle.PostArticleActivity"
+            android:exported="false" />
+        <activity
             android:name=".screen.main.MainActivity"
             android:exported="true">
             <intent-filter>

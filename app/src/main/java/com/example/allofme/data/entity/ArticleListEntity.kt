@@ -2,8 +2,8 @@ package com.example.allofme.data.entity
 
 import android.net.Uri
 import android.os.Parcelable
-import com.example.allofme.screen.board.article.FieldCategory
-import com.example.allofme.screen.board.article.YearCategory
+import com.example.allofme.screen.board.articlelist.FieldCategory
+import com.example.allofme.screen.board.articlelist.YearCategory
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

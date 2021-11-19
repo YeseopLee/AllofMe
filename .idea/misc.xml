@@ -6,12 +6,15 @@
         <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/drawable/ic_article.xml" value="0.22239583333333332" />
         <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/drawable/tab_selector.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/layout/activity_post_article.xml" value="0.2677083333333333" />
         <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/layout/fragment_article.xml" value="0.20625" />
         <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/layout/fragment_article_list.xml" value="0.18009118541033434" />
         <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/layout/fragment_board.xml" value="0.25" />
         <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/layout/fragment_my.xml" value="0.24864130434782608" />
         <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/layout/viewholder_board.xml" value="0.33" />
         <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/layout/viewholder_post.xml" value="0.18009118541033434" />
+        <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/layout/viewholder_post_article.xml" value="0.2677083333333333" />
+        <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/layout/viewholder_post_article_image.xml" value="0.2677083333333333" />
         <entry key="..\:/Users/lee/AndroidStudioProjects/AllofMe/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.1" />
       </map>
     </option>
