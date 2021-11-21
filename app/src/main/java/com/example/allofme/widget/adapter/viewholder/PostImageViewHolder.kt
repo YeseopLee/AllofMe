@@ -1,7 +1,7 @@
 package com.example.allofme.widget.adapter.viewholder
 
 import com.example.allofme.databinding.ViewholderPostArticleImageBinding
-import com.example.allofme.model.board.post.PostArticleModel
+import com.example.allofme.model.board.postArticle.PostArticleModel
 import com.example.allofme.screen.base.BaseViewModel
 import com.example.allofme.screen.provider.ResourcesProvider
 import com.example.allofme.widget.adapter.listener.AdapterListener

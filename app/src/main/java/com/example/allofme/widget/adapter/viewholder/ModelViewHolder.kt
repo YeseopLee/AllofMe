@@ -23,9 +23,5 @@ abstract class ModelViewHolder<M: Model>(
 
     abstract fun bindViews(model: M, adapterListener: AdapterListener)
 
-    open fun addTextWatcher(model: M) {
-
-    }
-
 
 }

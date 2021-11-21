@@ -8,7 +8,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 class DefaultArticleListRepository(
-    private val resourcesProvider: ResourcesProvider,
     private val ioDispatcher: CoroutineDispatcher
 ) : ArticleListRepository {
 

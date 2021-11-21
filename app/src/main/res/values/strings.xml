@@ -17,4 +17,9 @@
     <string name="update_my_article">내 포트폴리오 수정하기</string>
     <string name="post_article">글 쓰기</string>
 
+    <!-- EditText Hint-->
+    <string name="edit_hint">내용을 작성해 주세요.</string>
+
+    <!-- GalleryActivity -->
+    <string name="confirm">확인</string>
 </resources>
