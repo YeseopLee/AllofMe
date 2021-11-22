@@ -6,7 +6,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/container"
-        android:layout_width="200dp"
+        android:layout_width="100dp"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -37,8 +37,8 @@
 
             <ImageButton
                 android:id="@+id/closeButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:background="@drawable/bg_round_corner_8_black"
                 android:foreground="@drawable/ic_close"
                 android:layout_marginTop="16dp"

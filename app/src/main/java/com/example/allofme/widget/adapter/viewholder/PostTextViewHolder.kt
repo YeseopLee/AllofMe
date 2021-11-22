@@ -2,6 +2,7 @@ package com.example.allofme.widget.adapter.viewholder
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import com.example.allofme.databinding.ViewholderPostArticleBinding
 import com.example.allofme.model.board.postArticle.PostArticleModel
 import com.example.allofme.screen.base.BaseViewModel
@@ -24,6 +25,7 @@ class PostTextViewHolder(
 
     override fun bindData(model: PostArticleModel) = with(binding) {
         binding.descriptionEditText.addTextChangedListener(MyTextWatcher(model))
+        descriptionEditText.setText(model.text)
         super.bindData(model)
 
     }

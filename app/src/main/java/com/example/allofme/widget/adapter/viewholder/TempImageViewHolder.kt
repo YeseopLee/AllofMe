@@ -7,6 +7,9 @@ import com.example.allofme.screen.base.BaseViewModel
 import com.example.allofme.screen.provider.ResourcesProvider
 import com.example.allofme.util.load
 import com.example.allofme.widget.adapter.listener.AdapterListener
+import com.example.allofme.widget.adapter.listener.board.postArticle.PostArticleListener
+import com.example.allofme.widget.adapter.listener.board.postArticle.TempImageListener
+import com.example.allofme.widget.adapter.listener.board.postArticle.gallery.GalleryPhotoListener
 
 class TempImageViewHolder(
     private val binding: ViewholderPostArticleImagelistBinding,
@@ -19,7 +22,14 @@ class TempImageViewHolder(
     }
 
     override fun bindViews(model: PostArticleModel, adapterListener: AdapterListener) = with(binding) {
-//
+        if(adapterListener is TempImageListener) {
+            root.setOnClickListener {
+                adapterListener.onClickItem(model)
+            }
+        }
+        closeButton.setOnClickListener {
+
+        }
     }
 
     override fun bindData(model: PostArticleModel) = with(binding) {

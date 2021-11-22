@@ -24,12 +24,12 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:background="@drawable/bg_round_corner_8_black"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
             android:backgroundTint="@color/white"
             android:src="@drawable/ic_check_disabled"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

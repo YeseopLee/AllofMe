@@ -43,6 +43,7 @@ class GalleryActivity : BaseActivity<GalleryViewModel, ActivityGalleryBinding>()
                 override fun onClickItem(model: GalleryPhotoModel) {
                     if(limitOver) { // 체크가5개가 이미 된 경우, 다음 클릭한 model을 isSelected로 분기
                         if(model.isSelected) viewModel.selectPhoto(model)
+                        else Toast.makeText(this@GalleryActivity, "사진은 5개까지만 추가할 수 있습니다.",Toast.LENGTH_SHORT).show()
                     } else {
                         viewModel.selectPhoto(model)
                     }

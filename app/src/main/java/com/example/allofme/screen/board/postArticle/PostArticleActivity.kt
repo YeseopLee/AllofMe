@@ -22,6 +22,7 @@ import com.example.allofme.screen.base.BaseActivity
 import com.example.allofme.screen.board.postArticle.gallery.GalleryActivity
 import com.example.allofme.screen.provider.ResourcesProvider
 import com.example.allofme.widget.adapter.ModelRecyclerAdapter
+import com.example.allofme.widget.adapter.PostArticleRecyclerAdapter
 import com.example.allofme.widget.adapter.listener.board.postArticle.PostArticleListener
 import com.example.allofme.widget.adapter.listener.board.postArticle.TempImageListener
 import com.example.allofme.widget.adapter.viewholder.TempImageViewHolder
@@ -43,25 +44,10 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
     override fun initViews() = with(binding) {
         viewModel.fetchData()
         recyclerView.adapter = descAdapter
+
         imageListRecyclerView.adapter = tempImageListAdapter
 
         addPhotoButton.setOnClickListener {
-
-            viewModel._postArticleLiveData.add(
-                PostArticleModel(
-                    id = viewModel.viewHolderCount.toLong(),
-                    type = CellType.ARTICLE_IMAGE_CELL
-                )
-            )
-            viewModel._postArticleLiveData.add(
-                PostArticleModel(
-                    id = viewModel.viewHolderCount.toLong() + 1,
-                    type = CellType.ARTICLE_EDIT_CELL,
-                )
-            )
-            viewModel.viewHolderCount += 2
-            recyclerView.setItemViewCacheSize(viewModel.viewHolderCount) // 이미 생성됏지만 스크롤하여 사라진 viewholder를, 다시 나타날 때 다시 만드는것이 아니라 cache에 저장후 사용하게 해준다.
-            viewModel.fetchData()
 
             checkExternalStoragePermission {
                 startGalleryScreen()
@@ -69,12 +55,10 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
         }
 
-
     }
 
-
     private val descAdapter by lazy {
-        ModelRecyclerAdapter<PostArticleModel, PostArticleViewModel>(
+        PostArticleRecyclerAdapter<PostArticleModel, PostArticleViewModel>(
             listOf(),
             viewModel,
             resourcesProvider,
@@ -97,7 +81,15 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
             resourcesProvider,
             adapterListener = object: TempImageListener {
                 override fun onClickItem(model: PostArticleModel) {
-                    //
+
+
+                    var editTextList = descAdapter.currentList.filter { it.text != null }
+                    viewModel.stringList.clear()
+                    for (i in editTextList.indices) {
+                        viewModel.stringList.add(editTextList[i].text!!)
+                    }
+                    viewModel.updateDescription(model)
+                    binding.recyclerView.setItemViewCacheSize(viewModel.articleDescList.size)
                 }
             }
         )
@@ -105,9 +97,23 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
 
     override fun observeData()  {
-        viewModel.postArticleLiveData.observe(this) {
-            descAdapter.submitList(it)
+
+        viewModel.postArticleStateLiveData.observe(this) {
+            when (it) {
+                is PostArticleState.Uninitialized -> Unit
+                is PostArticleState.Loading -> handleLoadingState()
+                is PostArticleState.Success -> handleSuccessState(it)
+            }
         }
+    }
+
+    private fun handleLoadingState() {
+
+    }
+
+    private fun handleSuccessState(state: PostArticleState.Success) {
+        descAdapter.submitList(state.articleDescList)
+        binding.recyclerView.smoothScrollToPosition(descAdapter.itemCount -1)
     }
 
     private fun checkExternalStoragePermission(uploadAction: () -> Unit) {
@@ -163,7 +169,6 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
                     }
                     tempImageListAdapter.submitList(imageUriList)
                     binding.imageListRecyclerView.isVisible = true
-                    Log.e("???",imageUriList.toString())
                 } ?: kotlin.run {
                     Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -172,6 +177,11 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
                 Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    override fun onResume() {
+        tempImageListAdapter.notifyDataSetChanged()
+        super.onResume()
     }
 
 

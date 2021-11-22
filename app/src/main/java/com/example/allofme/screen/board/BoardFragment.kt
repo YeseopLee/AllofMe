@@ -88,9 +88,6 @@ class BoardFragment: BaseFragment<BoardViewModel,FragmentBoardBinding>() {
                 tab.setText(fieldCategories[position].categoryNameId)
             }.attach()
 
-            Log.e("initViews,", viewPagerAdapter.fragmentList.first().fieldCategory.toString())
-            Log.e("initViews,", viewPagerAdapter.fragmentList[1].fieldCategory.toString())
-
         }
 
 

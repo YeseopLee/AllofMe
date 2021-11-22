@@ -16,7 +16,7 @@ class GalleryViewModel(
 
     private lateinit var photoList: MutableList<GalleryPhotoModel>
 
-    val galleryStateLiveData = MutableLiveData<GalleryState>()
+    val galleryStateLiveData = MutableLiveData<GalleryState>(GalleryState.Uninitialized)
 
     override fun fetchData(): Job = viewModelScope.launch {
         galleryStateLiveData.value = GalleryState.Loading
@@ -32,7 +32,6 @@ class GalleryViewModel(
         galleryStateLiveData.value = GalleryState.Loading
         val findGalleryPhoto = photoList.find { it.id == galleryPhoto.id }
         findGalleryPhoto?.let { photo ->
-            Log.e("findGalleery", findGalleryPhoto.toString())
             if(photo.size > 5) {
                 photoList[photoList.indexOf(photo)] =
                     photo.copy(
