@@ -8,12 +8,20 @@ import androidx.core.view.isVisible
 import com.example.allofme.R
 import com.example.allofme.databinding.FragmentMyBinding
 import com.example.allofme.screen.base.BaseFragment
+import com.example.allofme.screen.board.articlelist.FieldCategory
+import com.example.allofme.screen.board.articlelist.YearCategory
+import com.example.allofme.screen.provider.ResourcesProvider
 import com.example.allofme.util.load
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestoreSettings
+import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import com.google.firebase.auth.GoogleAuthCredential as GoogleAuthCredential
 
@@ -22,6 +30,9 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
     override val viewModel by viewModel<MyViewModel>()
 
     override fun getViewBinding(): FragmentMyBinding = FragmentMyBinding.inflate(layoutInflater)
+
+    private val firestore: FirebaseFirestore by inject<FirebaseFirestore>()
+    private val resourcesProvider by inject<ResourcesProvider>()
 
     override fun observeData() = viewModel.myStateLiveData.observe(viewLifecycleOwner) {
         when(it) {
@@ -75,6 +86,9 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
         loginRequiredGroup.isGone = true
         userNameTextView.text = state.userName
         profileImageView.load(state.profileImageUri.toString())
+        myFieldButton.text = state.field
+        myYearButton.text = state.year
+
     }
 
     private fun handleLoadingState() = with(binding) {
@@ -89,6 +103,78 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
         logoutButton.setOnClickListener {
             viewModel.logOut()
         }
+        myFieldButton.setOnClickListener {
+            saveField()
+        }
+        myYearButton.setOnClickListener {
+            saveYear()
+        }
+    }
+
+    private fun saveField() {
+
+        val fieldItems = arrayOf(FieldCategory.ANDROID.toString(), FieldCategory.BACKEND.toString(), FieldCategory.IOS.toString(), FieldCategory.WEB.toString())
+        var checkItem = 0
+        var myField: String?
+
+        //var test: String = resourcesProvider.getString(FieldCategory.ANDROID.categoryNameId)
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.category_field_all))
+            .setNeutralButton(resources.getString(R.string.alert_cancel)) {
+                _, _ ->
+            }
+            .setPositiveButton(resources.getString(R.string.alert_confirm)) { _, _ ->
+                myField = fieldItems[checkItem]
+
+                val userInfo = hashMapOf(
+                    "displayName" to firebaseAuth.currentUser!!.displayName,
+                    "field" to myField
+                )
+
+                firestore
+                    .collection("user")
+                    .document(firebaseAuth.currentUser!!.uid)
+                    .set(userInfo, SetOptions.merge())
+
+                binding.myFieldButton.text = myField
+            }
+            .setSingleChoiceItems(fieldItems, checkItem) { dialog, which ->
+                checkItem = which
+            }
+            .show()
+    }
+
+    private fun saveYear() {
+
+        val yearItems = arrayOf(resourcesProvider.getString(YearCategory.NEW.categoryNameId),resourcesProvider.getString(YearCategory.TWO_THREE.categoryNameId), resourcesProvider.getString(YearCategory.FOUR_FIVE.categoryNameId), resourcesProvider.getString(YearCategory.FIVE.categoryNameId))
+        var checkItem = 0
+        var myYear: String?
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.category_field_all))
+            .setNeutralButton(resources.getString(R.string.alert_cancel)) {
+                    _, _ ->
+            }
+            .setPositiveButton(resources.getString(R.string.alert_confirm)) { _, _ ->
+                myYear = yearItems[checkItem]
+
+                val userInfo = hashMapOf(
+                    "displayName" to firebaseAuth.currentUser!!.displayName,
+                    "year" to myYear
+                )
+
+                firestore
+                    .collection("user")
+                    .document(firebaseAuth.currentUser!!.uid)
+                    .set(userInfo, SetOptions.merge())
+
+                binding.myYearButton.text = myYear
+            }
+            .setSingleChoiceItems(yearItems, checkItem) { dialog, which ->
+                checkItem = which
+            }
+            .show()
     }
 
     private val gso: GoogleSignInOptions by lazy {

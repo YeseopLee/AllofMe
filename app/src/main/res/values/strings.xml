@@ -22,4 +22,8 @@
 
     <!-- GalleryActivity -->
     <string name="confirm">확인</string>
+
+    <!-- AlertDialog-->
+    <string name="alert_cancel">취소</string>
+    <string name="alert_confirm">확인</string>
 </resources>

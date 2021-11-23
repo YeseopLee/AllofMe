@@ -3,6 +3,7 @@ package com.example.allofme.screen.my
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.allofme.data.preference.MyPreferenceManager
+import com.example.allofme.data.repository.user.UserRepository
 import com.example.allofme.screen.base.BaseViewModel
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +12,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MyViewModel(
-    private val myPreferenceManager: MyPreferenceManager
+    private val myPreferenceManager: MyPreferenceManager,
+    private val userRepository: UserRepository
 ) : BaseViewModel() {
 
     val myStateLiveData = MutableLiveData<MyState>(MyState.Uninitialized)
@@ -35,10 +37,13 @@ class MyViewModel(
     }
 
     fun setUserInfo(firebaseUser: FirebaseUser?) = viewModelScope.launch {
+
         firebaseUser?.let { user ->
             myStateLiveData.value = MyState.Success.Registered(
                 userName = user.displayName ?: "???",
-                profileImageUri = user.photoUrl
+                profileImageUri = user.photoUrl,
+                field = userRepository.getUserInfo(user.uid).field,
+                year = userRepository.getUserInfo(user.uid).year
             )
         } ?: kotlin.run {
             myStateLiveData.value = MyState.Success.NotRegistered

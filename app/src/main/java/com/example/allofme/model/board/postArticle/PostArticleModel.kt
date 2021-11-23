@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
+import com.example.allofme.data.entity.ArticleEntity
 import com.example.allofme.model.CellType
 import com.example.allofme.model.Model
 import kotlinx.parcelize.Parcelize
@@ -11,10 +12,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class PostArticleModel (
     override val id: Long,
-    override val type: CellType = CellType.ARTICLE_EDIT_CELL,
-    var order: Int = 0,
+    override var type: CellType = CellType.ARTICLE_EDIT_CELL,
     var text: String? = null,
-    val url: Uri? = null
+    var url: String? = null
 ): Model(id, type), Parcelable {
 
     companion object {
@@ -31,5 +31,6 @@ data class PostArticleModel (
         }
 
     }
+
 
 }

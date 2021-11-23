@@ -5,8 +5,8 @@
         <item name="toolbarWithArrowButtonStyle">@style/Widget.AllofMe.Toolbar.WithArrow</item>
         <item name="toolbarWithCloseButtonStyle">@style/Widget.AllofMe.Toolbar.WithClose</item>
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/gray_200</item>
-        <item name="colorPrimaryVariant">@color/gray_140</item>
+        <item name="colorPrimary">@color/gray_140</item>
+        <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
