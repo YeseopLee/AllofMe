@@ -11,7 +11,7 @@ data class PostArticleEntity (
     val id: Long,
     val type: CellType = CellType.ARTICLE_EDIT_CELL,
     var text: String? = null,
-    val url: Uri? = null
+    val url: String? = null
 ):Parcelable
 
 

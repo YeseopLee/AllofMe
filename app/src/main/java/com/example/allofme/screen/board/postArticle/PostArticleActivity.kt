@@ -11,22 +11,30 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.allofme.R
+import com.example.allofme.data.entity.ArticleEntity
 import com.example.allofme.databinding.ActivityPostArticleBinding
 import com.example.allofme.model.CellType
 import com.example.allofme.model.board.postArticle.PostArticleModel
 import com.example.allofme.screen.base.BaseActivity
 import com.example.allofme.screen.board.postArticle.gallery.GalleryActivity
+import com.example.allofme.screen.my.MyState
 import com.example.allofme.screen.provider.ResourcesProvider
 import com.example.allofme.widget.adapter.ModelRecyclerAdapter
 import com.example.allofme.widget.adapter.PostArticleRecyclerAdapter
 import com.example.allofme.widget.adapter.listener.board.postArticle.PostArticleListener
 import com.example.allofme.widget.adapter.listener.board.postArticle.TempImageListener
 import com.example.allofme.widget.adapter.viewholder.TempImageViewHolder
-import kotlinx.coroutines.Job
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -39,12 +47,15 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
     private val resourcesProvider by inject<ResourcesProvider>()
 
+    private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
+    private val firestore: FirebaseFirestore by inject<FirebaseFirestore>()
+    private val storage: FirebaseStorage by inject<FirebaseStorage>()
+
     private var imageUriList : ArrayList<PostArticleModel> = arrayListOf() // GalleyActivity에서 받아오는 imageUriList
 
     override fun initViews() = with(binding) {
         viewModel.fetchData()
         recyclerView.adapter = descAdapter
-
         imageListRecyclerView.adapter = tempImageListAdapter
 
         addPhotoButton.setOnClickListener {
@@ -52,7 +63,6 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
             checkExternalStoragePermission {
                 startGalleryScreen()
             }
-
         }
 
     }
@@ -82,13 +92,19 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
             adapterListener = object: TempImageListener {
                 override fun onClickItem(model: PostArticleModel) {
 
+                    // 본문에 적합한 CellType으로 변경해서 보내줘야함.
+                    var transModel = model.copy(
+                        id = model.id,
+                        type = CellType.ARTICLE_IMAGE_CELL,
+                        url = model.url
+                    )
 
                     var editTextList = descAdapter.currentList.filter { it.text != null }
                     viewModel.stringList.clear()
                     for (i in editTextList.indices) {
                         viewModel.stringList.add(editTextList[i].text!!)
                     }
-                    viewModel.updateDescription(model)
+                    viewModel.updateDescription(transModel)
                     binding.recyclerView.setItemViewCacheSize(viewModel.articleDescList.size)
                 }
             }
@@ -113,7 +129,88 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
     private fun handleSuccessState(state: PostArticleState.Success) {
         descAdapter.submitList(state.articleDescList)
-        binding.recyclerView.smoothScrollToPosition(descAdapter.itemCount -1)
+        binding.recyclerView.smoothScrollToPosition(descAdapter.itemCount - 1)
+
+        binding.addArticleButton.setOnClickListener {
+
+            val title : String = "제목"
+            val userId = firebaseAuth.currentUser?.uid.orEmpty()
+
+            // 글 내용에 image가 들어있는 경우 image를 firebase storage에 우선 저장
+            if(imageUriList.isNotEmpty()) {
+                lifecycleScope.launch {
+                    val results = uploadPhotoOnStorage(imageUriList)
+                    afterUploadPhoto(results, title, state.articleDescList, userId)
+                }
+            }
+            else {
+                uploadArticle(userId, title, state.articleDescList)
+            }
+        }
+
+    }
+    private suspend fun uploadPhotoOnStorage(modelList: ArrayList<PostArticleModel>) = withContext(Dispatchers.IO) {
+        val tempUriList : ArrayList<String> = arrayListOf()
+        modelList.forEach {
+            it.url?.let { url -> tempUriList.add(url) }
+        }
+        val uriList = tempUriList.toList()
+        val uploadadDeferred: List<Deferred<Any>> = uriList.mapIndexed { index, uri ->
+            lifecycleScope.async {
+                try {
+                    val fileName = "image${index}.png"
+                    return@async storage.reference.child("article/photo").child(fileName)
+                        .putFile(uri.toUri())
+                        .await()
+                        .storage
+                        .downloadUrl
+                        .await()
+                        .toString()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return@async Pair(uri, e)
+                }
+            }
+        }
+        return@withContext uploadadDeferred.awaitAll()
+    }
+
+    private fun afterUploadPhoto(results: List<Any>, title: String, model: List<PostArticleModel>, userId: String) {
+        val errorResults = results.filterIsInstance<Pair<Uri, Exception>>()
+        val successResults = results.filterIsInstance<String>()
+
+        var e = 0
+        model.forEach {
+            if(it.type == CellType.ARTICLE_IMAGE_CELL) {
+                it.url = successResults[e]
+                e += 1
+            }
+        }
+
+        when {
+            errorResults.isNotEmpty() && successResults.isNotEmpty() -> {
+                //photoUploadErrorButContinurDialog(errorResults, successResults, title, model, userId)
+            }
+            errorResults.isNotEmpty() && successResults.isEmpty() -> {
+                //uploadError()
+            }
+            else -> {
+                uploadArticle(userId, title, model)
+            }
+        }
+    }
+
+    private fun uploadArticle(userId: String, title: String, model: List<PostArticleModel>) {
+
+
+        val article = ArticleEntity(userId, title, System.currentTimeMillis(), model, viewModel.year, viewModel.field)
+
+
+        Log.e("uploadArticle?", article.toString())
+        firestore
+            .collection("article")
+            .add(article)
+
     }
 
     private fun checkExternalStoragePermission(uploadAction: () -> Unit) {

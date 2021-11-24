@@ -40,9 +40,6 @@ class ModelRecyclerAdapter<M: Model, VM: BaseViewModel>(
         super.submitList(list)
     }
 
-    fun getPositionValue(position: Int): Long {
-        return modelList[position].id
-    }
 
 
 

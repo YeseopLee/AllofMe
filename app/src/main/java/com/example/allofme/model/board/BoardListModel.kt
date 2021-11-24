@@ -17,8 +17,5 @@ data class BoardListModel (
     val profileImageUrl: Uri? = null
 ) : Model(id, type) {
 
-    fun toEntity() = ArticleListEntity(
-        id, name, title, year, field, profileImageUrl
-    )
 
 }

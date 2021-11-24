@@ -82,7 +82,7 @@ class GalleryActivity : BaseActivity<GalleryViewModel, ActivityGalleryBinding>()
 
     private fun handleConfirm(state: GalleryState.Confirm) {
         setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(URI_LIST_KEY, ArrayList(state.photoList.map { PostArticleModel(id=it.hashCode().toLong(), type=CellType.ARTICLE_TEMP_IMAGE_CELL, url = it.uri) }))
+            putExtra(URI_LIST_KEY, ArrayList(state.photoList.map { PostArticleModel(id=it.hashCode().toLong(), type=CellType.ARTICLE_TEMP_IMAGE_CELL, url = it.uri.toString()) }))
         })
         finish()
     }
