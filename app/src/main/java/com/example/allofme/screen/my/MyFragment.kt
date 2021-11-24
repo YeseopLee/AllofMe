@@ -146,10 +146,14 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
     }
 
     private fun saveYear() {
-
-        val yearItems = arrayOf(resourcesProvider.getString(YearCategory.NEW.categoryNameId),resourcesProvider.getString(YearCategory.TWO_THREE.categoryNameId), resourcesProvider.getString(YearCategory.FOUR_FIVE.categoryNameId), resourcesProvider.getString(YearCategory.FIVE.categoryNameId))
+        val yearItems = arrayOf(
+            resourcesProvider.getString(YearCategory.NEW.categoryNameId),
+            resourcesProvider.getString(YearCategory.TWO_THREE.categoryNameId),
+            resourcesProvider.getString(YearCategory.FOUR_FIVE.categoryNameId),
+            resourcesProvider.getString(YearCategory.FIVE.categoryNameId)
+        )
         var checkItem = 0
-        var myYear: String?
+        var myYear: String? = null
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.category_field_all))
@@ -157,7 +161,13 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
                     _, _ ->
             }
             .setPositiveButton(resources.getString(R.string.alert_confirm)) { _, _ ->
-                myYear = yearItems[checkItem]
+                when (checkItem) {
+                    // YearCategory를 불러올때 valueOf(const name)으로 불러오기 위해 Category의 const의 문자열로 저장하였다.
+                    0 -> myYear = "NEW"
+                    1 -> myYear = "TWO_THREE"
+                    2 -> myYear = "FOUR_FIVE"
+                    3 -> myYear = "FIVE"
+                }
 
                 val userInfo = hashMapOf(
                     "displayName" to firebaseAuth.currentUser!!.displayName,

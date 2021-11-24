@@ -17,8 +17,7 @@ import java.lang.Exception
 
 class DefaultUserRepository(
     private val ioDispatcher: CoroutineDispatcher,
-    private val fireStore: FirebaseFirestore,
-    private val firebaseAuth: FirebaseAuth
+    private val fireStore: FirebaseFirestore
 ): UserRepository {
 
     override suspend fun getUserInfo(userId: String): UserEntity = withContext(ioDispatcher) {

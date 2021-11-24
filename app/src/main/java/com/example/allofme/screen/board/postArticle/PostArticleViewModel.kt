@@ -6,14 +6,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.allofme.data.entity.PostArticleEntity
+import com.example.allofme.data.repository.board.article.detail.DefaultDetailArticleRepository
+import com.example.allofme.data.repository.board.article.detail.DetailArticleRepository
+import com.example.allofme.data.repository.user.UserRepository
 import com.example.allofme.model.CellType
 import com.example.allofme.model.board.postArticle.PostArticleModel
 import com.example.allofme.screen.base.BaseViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class PostArticleViewModel() : BaseViewModel() {
+class PostArticleViewModel(
+    private val userRepository: UserRepository,
+    private val detailArticleRepository: DetailArticleRepository,
+    private val firebaseAuth: FirebaseAuth
+) : BaseViewModel() {
 
     val postArticleStateLiveData = MutableLiveData<PostArticleState>(PostArticleState.Uninitialized)
 
@@ -21,7 +29,25 @@ class PostArticleViewModel() : BaseViewModel() {
     var stringList: ArrayList<String> = arrayListOf()
     var title: String? = null
 
+    var field: String? = null
+    var year: String? = null
+
     var viewHolderCount = 1
+
+
+    init {
+        getUser()
+        tempGetData()
+    }
+
+    private fun tempGetData() = viewModelScope.launch {
+        //Log.e("test", detailArticleRepository.getArticle("0HvTtdFqJRagfCX4xeMo").toString())
+    }
+
+    private fun getUser() = viewModelScope.launch {
+        field = firebaseAuth.currentUser?.uid?.let { userRepository.getUserInfo(it).field }
+        year = firebaseAuth.currentUser?.uid?.let { userRepository.getUserInfo(it).year }
+    }
 
     override fun fetchData(): Job = viewModelScope.launch {
         postArticleStateLiveData.value = PostArticleState.Loading

@@ -3,6 +3,8 @@ package com.example.allofme.di
 import com.example.allofme.data.preference.MyPreferenceManager
 import com.example.allofme.data.repository.board.article.ArticleListRepository
 import com.example.allofme.data.repository.board.article.DefaultArticleListRepository
+import com.example.allofme.data.repository.board.article.detail.DefaultDetailArticleRepository
+import com.example.allofme.data.repository.board.article.detail.DetailArticleRepository
 import com.example.allofme.data.repository.board.postArticle.gallery.DefaultGalleryPhotoRepository
 import com.example.allofme.data.repository.board.postArticle.gallery.GalleryPhotoRepository
 import com.example.allofme.data.repository.user.DefaultUserRepository
@@ -32,13 +34,14 @@ val appModule = module {
     viewModel { BoardViewModel() }
     viewModel { (fieldCategory: FieldCategory) -> ArticleListViewModel(get(), fieldCategory) }
     viewModel { MyViewModel(get(),get())}
-    viewModel { PostArticleViewModel() }
+    viewModel { PostArticleViewModel(get(), get(), get()) }
     viewModel { GalleryViewModel(get()) }
 
     //Repositories
-    single<ArticleListRepository> { DefaultArticleListRepository(get()) }
+    single<ArticleListRepository> { DefaultArticleListRepository(get(), get(), get()) }
     single<GalleryPhotoRepository> { DefaultGalleryPhotoRepository(get(), get())}
-    single<UserRepository> { DefaultUserRepository(get(), get(), get())}
+    single<UserRepository> { DefaultUserRepository(get(), get())}
+    single<DetailArticleRepository> { DefaultDetailArticleRepository(get(), get())}
 
     single { Dispatchers.IO }
     single { Dispatchers.Main }

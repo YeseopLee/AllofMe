@@ -16,28 +16,43 @@ class ArticleListViewModel(
 
     val articleListLiveData = MutableLiveData<List<BoardListModel>>()
 
+    var articleListStateLiveData = MutableLiveData<ArticleListState>(ArticleListState.Uninitialized)
+
     override fun fetchData(): Job = viewModelScope.launch {
+
+        articleListStateLiveData.value = ArticleListState.Loading
+
         var articleList = articleListRepository.getList(fieldCategory)
 
         if(yearCategory != YearCategory.ALL) {
             articleList = articleList.filter {
                 it.year == yearCategory
             }
-        } else {
-            articleList = articleList
         }
 
-
-        articleListLiveData.value = articleList.map {
-            BoardListModel(
-                id = it.id,
-                name = it.name,
-                title = it.title,
-                year = it.year,
-                field = it.field,
-                profileImageUrl = it.profileImageUrl
-            )
-        }
+        articleListStateLiveData.value = ArticleListState.Success(
+            articleList.map {
+                BoardListModel(
+                    id = it.id,
+                    name = it.name,
+                    title = it.title,
+                    year = it.year,
+                    field = it.field,
+                    profileImageUrl = it.profileImageUrl
+                )
+            }
+        )
+//
+//        articleListLiveData.value = articleList.map {
+//            BoardListModel(
+//                id = it.id,
+//                name = it.name,
+//                title = it.title,
+//                year = it.year,
+//                field = it.field,
+//                profileImageUrl = it.profileImageUrl
+//            )
+//        }
 
     }
 

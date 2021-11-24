@@ -23,6 +23,7 @@ import com.example.allofme.model.CellType
 import com.example.allofme.model.board.postArticle.PostArticleModel
 import com.example.allofme.screen.base.BaseActivity
 import com.example.allofme.screen.board.postArticle.gallery.GalleryActivity
+import com.example.allofme.screen.my.MyState
 import com.example.allofme.screen.provider.ResourcesProvider
 import com.example.allofme.widget.adapter.ModelRecyclerAdapter
 import com.example.allofme.widget.adapter.PostArticleRecyclerAdapter
@@ -200,8 +201,12 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
     }
 
     private fun uploadArticle(userId: String, title: String, model: List<PostArticleModel>) {
-        val article = ArticleEntity(userId, title, System.currentTimeMillis(),model )
 
+
+        val article = ArticleEntity(userId, title, System.currentTimeMillis(), model, viewModel.year, viewModel.field)
+
+
+        Log.e("uploadArticle?", article.toString())
         firestore
             .collection("article")
             .add(article)

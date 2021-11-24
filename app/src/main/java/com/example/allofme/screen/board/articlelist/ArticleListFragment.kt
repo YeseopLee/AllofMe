@@ -1,6 +1,8 @@
 package com.example.allofme.screen.board.articlelist
 
 import androidx.core.os.bundleOf
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.example.allofme.databinding.FragmentArticleListBinding
 import com.example.allofme.model.board.BoardListModel
 import com.example.allofme.screen.base.BaseFragment
@@ -42,8 +44,27 @@ class ArticleListFragment: BaseFragment<ArticleListViewModel, FragmentArticleLis
 
     }
 
-    override fun observeData() = viewModel.articleListLiveData.observe(viewLifecycleOwner) {
-        adapter.submitList(it)
+
+    override fun observeData() = viewModel.articleListStateLiveData.observe(viewLifecycleOwner) {
+        when(it) {
+            is ArticleListState.Loading -> handleStateLoading()
+            is ArticleListState.Success -> handleStateSuccess(it)
+            is ArticleListState.Error -> handleStateError(it)
+            else -> Unit
+        }
+    }
+
+    private fun handleStateLoading() {
+        binding.progressBar.isVisible = true
+    }
+
+    private fun handleStateSuccess(state: ArticleListState.Success) {
+        binding.progressBar.isGone = true
+        adapter.submitList(state.articleList)
+    }
+
+    private fun handleStateError(state: ArticleListState.Error) {
+        binding.progressBar.isGone = true
     }
 
 
