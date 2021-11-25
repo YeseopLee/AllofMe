@@ -1,5 +1,7 @@
 package com.example.allofme.widget.adapter.viewholder
 
+import android.net.Uri
+import androidx.annotation.NonNull
 import com.example.allofme.databinding.ViewholderPostArticleImageBinding
 import com.example.allofme.databinding.ViewholderPostArticleImagelistBinding
 import com.example.allofme.model.board.postArticle.PostArticleModel
@@ -26,10 +28,11 @@ class TempImageViewHolder(
             root.setOnClickListener {
                 adapterListener.onClickItem(model)
             }
+            closeButton.setOnClickListener {
+                adapterListener.removeItem(model)
+            }
         }
-        closeButton.setOnClickListener {
 
-        }
     }
 
     override fun bindData(model: PostArticleModel) = with(binding) {

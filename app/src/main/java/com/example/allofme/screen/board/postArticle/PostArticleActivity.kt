@@ -23,6 +23,7 @@ import com.example.allofme.model.CellType
 import com.example.allofme.model.board.postArticle.PostArticleModel
 import com.example.allofme.screen.base.BaseActivity
 import com.example.allofme.screen.board.postArticle.gallery.GalleryActivity
+import com.example.allofme.screen.board.postArticle.gallery.GalleryActivity.Companion.URI_LIST_KEY
 import com.example.allofme.screen.my.MyState
 import com.example.allofme.screen.provider.ResourcesProvider
 import com.example.allofme.widget.adapter.ModelRecyclerAdapter
@@ -54,6 +55,11 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
     private var imageUriList : ArrayList<PostArticleModel> = arrayListOf() // GalleyActivity에서 받아오는 imageUriList
 
     override fun initViews() = with(binding) {
+
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
+        }
+
         viewModel.fetchData()
         recyclerView.adapter = descAdapter
         imageListRecyclerView.adapter = tempImageListAdapter
@@ -74,14 +80,22 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
             resourcesProvider,
             adapterListener = object : PostArticleListener {
                 override fun onClickItem(model: PostArticleModel) {
-                    //
                 }
 
-                override fun onSaveItem(mode: PostArticleModel) {
-                    //
+                override fun onRemoveItem(model: PostArticleModel) {
+                    saveStrings()
+                    viewModel.removeImage(model)
                 }
             }
         )
+    }
+
+    private fun saveStrings() {
+        val editTextList = descAdapter.currentList.filter { it.text != null }
+        viewModel.stringList.clear()
+        for (i in editTextList.indices) {
+            viewModel.stringList.add(editTextList[i].text!!)
+        }
     }
 
     private val tempImageListAdapter by lazy {
@@ -93,13 +107,14 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
                 override fun onClickItem(model: PostArticleModel) {
 
                     // 본문에 적합한 CellType으로 변경해서 보내줘야함.
-                    var transModel = model.copy(
+                    val transModel = model.copy(
                         id = model.id,
                         type = CellType.ARTICLE_IMAGE_CELL,
                         url = model.url
                     )
 
-                    var editTextList = descAdapter.currentList.filter { it.text != null }
+                    // 본문에 담겨있는 edittext의 string들을 list에 담아준다.
+                    val editTextList = descAdapter.currentList.filter { it.text != null }
                     viewModel.stringList.clear()
                     for (i in editTextList.indices) {
                         viewModel.stringList.add(editTextList[i].text!!)
@@ -107,8 +122,18 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
                     viewModel.updateDescription(transModel)
                     binding.recyclerView.setItemViewCacheSize(viewModel.articleDescList.size)
                 }
+
+                override fun removeItem(model: PostArticleModel) {
+                    val index = imageUriList.indexOf(model)
+                    imageUriList.removeAt(index)
+                    notifyData()
+                }
             }
         )
+    }
+
+    private fun notifyData() {
+        tempImageListAdapter.notifyDataSetChanged()
     }
 
 
@@ -135,14 +160,20 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
             val title = binding.titleEditText.text.toString()
             val name = firebaseAuth.currentUser?.displayName.orEmpty()
-
             val userId = firebaseAuth.currentUser?.uid.orEmpty()
             val profileImage = firebaseAuth.currentUser?.photoUrl!!
+            val uploadedImageUriList : ArrayList<PostArticleModel> = arrayListOf()
+
+            // 실제로 본문에 삽입한 imageList
+            state.articleDescList.forEach {
+                if( it.type == CellType.ARTICLE_IMAGE_CELL )
+                    uploadedImageUriList.add(it)
+            }
 
             // 글 내용에 image가 들어있는 경우 image를 firebase storage에 우선 저장
-            if(imageUriList.isNotEmpty()) {
+            if(uploadedImageUriList.isNotEmpty()) {
                 lifecycleScope.launch {
-                    val results = uploadPhotoOnStorage(imageUriList)
+                    val results = uploadPhotoOnStorage(uploadedImageUriList)
                     afterUploadPhoto(results, title, name, state.articleDescList, userId, profileImage)
                 }
             }
@@ -155,15 +186,14 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
     }
     private suspend fun uploadPhotoOnStorage(modelList: ArrayList<PostArticleModel>) = withContext(Dispatchers.IO) {
         val tempUriList : ArrayList<String> = arrayListOf()
+
         modelList.forEach {
             it.url?.let { url -> tempUriList.add(url) }
         }
 
-        Log.e("uriList", tempUriList.toString())
 
         val uriList = tempUriList.toList()
 
-        Log.e("uriList2", uriList.toString())
         val uploadedDeferred: List<Deferred<Any>> = uriList.mapIndexed { index, uri ->
             lifecycleScope.async {
                 try {
@@ -188,6 +218,7 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
         val errorResults = results.filterIsInstance<Pair<Uri, Exception>>()
         val successResults = results.filterIsInstance<String>()
 
+        // URL을 firestore에 적합한 타입으로 변경한다.
         var e = 0
         model.forEach {
             if(it.type == CellType.ARTICLE_IMAGE_CELL) {
@@ -211,11 +242,8 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
     private fun uploadArticle(userId: String, title: String, name: String, model: List<PostArticleModel>, profileImage: Uri) {
 
-
         val article = ArticleEntity(userId, title, name, System.currentTimeMillis(), model, viewModel.year, viewModel.field, profileImage.toString())
 
-
-        Log.e("uploadArticle?", article.toString())
         firestore
             .collection("article")
             .add(article)
@@ -224,6 +252,7 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
     }
 
+    // 저장소 권한 획득
     private fun checkExternalStoragePermission(uploadAction: () -> Unit) {
         when {
             ContextCompat.checkSelfPermission(
@@ -271,7 +300,7 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
         when (requestCode) {
             GALLERY_REQUEST_CODE -> {
                 data?.let {
-                    val uriList = it.getParcelableArrayListExtra<PostArticleModel>("uriList")
+                    val uriList = it.getParcelableArrayListExtra<PostArticleModel>(URI_LIST_KEY)
                     uriList?.let { list ->
                         imageUriList.addAll(list)
                     }

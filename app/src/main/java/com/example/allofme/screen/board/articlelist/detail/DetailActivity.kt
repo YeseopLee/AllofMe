@@ -49,6 +49,11 @@ class DetailActivity : BaseActivity<DetailViewModel, ActivityDetailBinding>() {
     }
 
     override fun initViews() {
+
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
+        }
+
         viewModel.getArticleDetail(articleId)
         binding.recyclerView.adapter = adapter
     }

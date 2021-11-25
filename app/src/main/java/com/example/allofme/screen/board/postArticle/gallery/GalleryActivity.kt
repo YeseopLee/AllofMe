@@ -24,8 +24,6 @@ class GalleryActivity : BaseActivity<GalleryViewModel, ActivityGalleryBinding>()
 
     private val resourcesProvider by inject<ResourcesProvider>()
 
-    private var limitOver: Boolean = false
-
     override fun initViews() = with(binding) {
         recyclerView.adapter = adapter
 
@@ -41,12 +39,7 @@ class GalleryActivity : BaseActivity<GalleryViewModel, ActivityGalleryBinding>()
             resourcesProvider,
             adapterListener = object : GalleryPhotoListener {
                 override fun onClickItem(model: GalleryPhotoModel) {
-                    if(limitOver) { // 체크가5개가 이미 된 경우, 다음 클릭한 model을 isSelected로 분기
-                        if(model.isSelected) viewModel.selectPhoto(model)
-                        else Toast.makeText(this@GalleryActivity, "사진은 5개까지만 추가할 수 있습니다.",Toast.LENGTH_SHORT).show()
-                    } else {
-                        viewModel.selectPhoto(model)
-                    }
+                    viewModel.selectPhoto(model)
                 }
 
             }
@@ -70,19 +63,21 @@ class GalleryActivity : BaseActivity<GalleryViewModel, ActivityGalleryBinding>()
     private fun handleSuccess(state: GalleryState.Success) = with(binding) {
         progressBar.isGone = true
         recyclerView.isVisible = true
-        checkLimit(state)
         adapter.submitList(state.photoList)
         adapter.notifyDataSetChanged()
     }
 
-    // 5개까지만 체크가능
-    private fun checkLimit(state: GalleryState.Success) {
-        limitOver = state.photoList.filter { it.isSelected }.size == 5
-    }
 
+    // URI_LIST_KEY에 갤러리에서 선택한 사진들을 저장하여 전송
     private fun handleConfirm(state: GalleryState.Confirm) {
         setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(URI_LIST_KEY, ArrayList(state.photoList.map { PostArticleModel(id=it.hashCode().toLong(), type=CellType.ARTICLE_TEMP_IMAGE_CELL, url = it.uri.toString()) }))
+            putExtra(URI_LIST_KEY, ArrayList(state.photoList.map {
+                PostArticleModel(
+                    id=it.hashCode().toLong(),
+                    type=CellType.ARTICLE_TEMP_IMAGE_CELL,
+                    url = it.uri.toString()) }
+                )
+            )
         })
         finish()
     }

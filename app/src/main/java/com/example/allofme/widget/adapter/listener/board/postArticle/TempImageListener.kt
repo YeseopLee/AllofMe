@@ -7,4 +7,6 @@ interface TempImageListener: AdapterListener {
 
     fun onClickItem(model: PostArticleModel)
 
+    fun removeItem(model: PostArticleModel)
+
 }

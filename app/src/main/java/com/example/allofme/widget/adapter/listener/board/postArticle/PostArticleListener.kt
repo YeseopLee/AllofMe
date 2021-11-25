@@ -7,6 +7,6 @@ interface PostArticleListener: AdapterListener {
 
     fun onClickItem(model: PostArticleModel)
 
-    fun onSaveItem(mode: PostArticleModel)
+    fun onRemoveItem(model: PostArticleModel)
 
 }

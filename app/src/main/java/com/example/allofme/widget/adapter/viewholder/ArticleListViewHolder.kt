@@ -1,6 +1,6 @@
 package com.example.allofme.widget.adapter.viewholder
 
-import com.example.allofme.databinding.ViewholderBoardBinding
+import com.example.allofme.databinding.ViewholderArticleListBinding
 import com.example.allofme.model.board.ArticleListModel
 import com.example.allofme.screen.base.BaseViewModel
 import com.example.allofme.screen.provider.ResourcesProvider
@@ -8,8 +8,8 @@ import com.example.allofme.util.load
 import com.example.allofme.widget.adapter.listener.AdapterListener
 import com.example.allofme.widget.adapter.listener.board.BoardListListener
 
-class BoardViewHolder(
-    private val binding:ViewholderBoardBinding,
+class ArticleListViewHolder(
+    private val binding:ViewholderArticleListBinding,
     viewModel: BaseViewModel,
     resourcesProvider: ResourcesProvider
 ): ModelViewHolder<ArticleListModel>(binding, viewModel, resourcesProvider) {

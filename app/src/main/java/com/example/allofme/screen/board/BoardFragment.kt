@@ -29,6 +29,8 @@ class BoardFragment: BaseFragment<BoardViewModel,FragmentBoardBinding>() {
 
     private val myPreferenceManager by inject<MyPreferenceManager>()
 
+    private val firebaseAuth by inject<FirebaseAuth>()
+
     override fun initViews() = with(binding) {
 
         viewModel.initViewModel()
@@ -60,7 +62,7 @@ class BoardFragment: BaseFragment<BoardViewModel,FragmentBoardBinding>() {
     }
 
     private fun userSessionCheck() {
-        if (myPreferenceManager.getIdToken() == null) {
+        if (myPreferenceManager.getIdToken() == null || firebaseAuth.currentUser == null) { //내장된 토큰이 없거나 세션이 만료되서 끊긴경우.
             alertLogin {
                 lifecycleScope.launch {
                     (requireActivity() as MainActivity).goToTab(MainTabMenu.MY)

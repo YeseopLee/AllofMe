@@ -9,6 +9,11 @@ import com.example.allofme.screen.base.BaseViewModel
 import com.example.allofme.screen.provider.ResourcesProvider
 import com.example.allofme.widget.adapter.viewholder.*
 
+
+/*
+* RecyclerView의 ViewHolder들을 사전에 정의해둔 Enum class인 CellType에 따라 분기하여 사용.
+* */
+
 object ModelViewHolderMapper {
 
     @Suppress("UNCHECKED_CAST")
@@ -20,8 +25,8 @@ object ModelViewHolderMapper {
     ): ModelViewHolder<M> {
         var inflater = LayoutInflater.from(parent.context)
         val viewHolder = when (type) {
-            CellType.ARTICLE_CELL -> BoardViewHolder(
-                ViewholderBoardBinding.inflate(inflater, parent, false),
+            CellType.ARTICLE_CELL -> ArticleListViewHolder(
+                ViewholderArticleListBinding.inflate(inflater, parent, false),
                 viewModel,
                 resourcesProvider
             )
@@ -42,6 +47,11 @@ object ModelViewHolderMapper {
             )
             CellType.ARTICLE_DETAIL -> DetailArticleViewHolder(
                 ViewholderDetailArticleBinding.inflate(inflater, parent, false),
+                viewModel,
+                resourcesProvider
+            )
+            CellType.ARTICLE_DETAIL_IMAGE -> DetailArticleImageViewHolder(
+                ViewholderDetailArticleImageBinding.inflate(inflater, parent, false),
                 viewModel,
                 resourcesProvider
             )

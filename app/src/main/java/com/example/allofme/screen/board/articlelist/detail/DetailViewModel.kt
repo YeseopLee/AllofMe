@@ -28,16 +28,18 @@ class DetailViewModel(
 
         var article = detailArticleRepository.getArticle(articleId)
 
+        // 글 읽기에 적합한 CellType으로 변경하기
         article.content.forEach {
             if (it.type == CellType.ARTICLE_EDIT_CELL) {
                 it.type = CellType.ARTICLE_DETAIL
+            }
+            if (it.type == CellType.ARTICLE_IMAGE_CELL) {
+                it.type = CellType.ARTICLE_DETAIL_IMAGE
             }
         }
 
         detailArticleStateLiveData.value = DetailState.Success(
             article
         )
-
-        Log.e("article", article.toString())
     }
 }

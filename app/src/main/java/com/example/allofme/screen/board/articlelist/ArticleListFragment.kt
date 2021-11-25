@@ -56,7 +56,6 @@ class ArticleListFragment: BaseFragment<ArticleListViewModel, FragmentArticleLis
 
     override fun onResume() = with(Dispatchers.IO) {
         viewModel.fetchData()
-        binding.recyclerView.smoothScrollToPosition(0)
         super.onResume()
     }
 
@@ -77,7 +76,6 @@ class ArticleListFragment: BaseFragment<ArticleListViewModel, FragmentArticleLis
     private fun handleStateSuccess(state: ArticleListState.Success) {
         binding.progressBar.isGone = true
         adapter.submitList(state.articleList)
-        Log.e("profileImageUrl222", state.articleList.toString())
     }
 
     private fun handleStateError(state: ArticleListState.Error) {

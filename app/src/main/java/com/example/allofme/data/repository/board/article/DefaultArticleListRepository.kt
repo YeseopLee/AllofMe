@@ -29,7 +29,6 @@ class DefaultArticleListRepository(
             .addOnSuccessListener { snapshot ->
 
                 for (document in snapshot) {
-                    Log.e("documnetId",document.id.toString())
                     val item = ArticleListEntity(
                         id = document.hashCode().toLong(),
                         articleId = document.id,
@@ -42,11 +41,9 @@ class DefaultArticleListRepository(
                     )
                     articleList.add(item)
                 }
-                Log.e("articleList",articleList.toString())
             }
             .await()
 
-        Log.e("finalArticleList",articleList.toString())
         when (fieldCategory) {
             FieldCategory.ALL -> {
                 articleList
