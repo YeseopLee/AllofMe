@@ -1,5 +1,6 @@
 package com.example.allofme.di
 
+import com.example.allofme.data.entity.ArticleEntity
 import com.example.allofme.data.preference.MyPreferenceManager
 import com.example.allofme.data.repository.board.article.ArticleListRepository
 import com.example.allofme.data.repository.board.article.DefaultArticleListRepository
@@ -12,6 +13,7 @@ import com.example.allofme.data.repository.user.UserRepository
 import com.example.allofme.screen.board.BoardViewModel
 import com.example.allofme.screen.board.articlelist.ArticleListViewModel
 import com.example.allofme.screen.board.articlelist.FieldCategory
+import com.example.allofme.screen.board.articlelist.detail.DetailViewModel
 import com.example.allofme.screen.board.postArticle.PostArticleViewModel
 import com.example.allofme.screen.board.postArticle.gallery.GalleryViewModel
 import com.example.allofme.screen.main.MainViewModel
@@ -36,6 +38,7 @@ val appModule = module {
     viewModel { MyViewModel(get(),get())}
     viewModel { PostArticleViewModel(get(), get(), get()) }
     viewModel { GalleryViewModel(get()) }
+    viewModel { (articleEntity: ArticleEntity) -> DetailViewModel (get()) }
 
     //Repositories
     single<ArticleListRepository> { DefaultArticleListRepository(get(), get(), get()) }

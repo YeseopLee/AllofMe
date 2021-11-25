@@ -1,14 +1,19 @@
 package com.example.allofme.screen.board.articlelist
 
+import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import com.example.allofme.data.entity.ArticleEntity
 import com.example.allofme.databinding.FragmentArticleListBinding
-import com.example.allofme.model.board.BoardListModel
+import com.example.allofme.model.board.ArticleListModel
 import com.example.allofme.screen.base.BaseFragment
+import com.example.allofme.screen.board.articlelist.detail.DetailActivity
 import com.example.allofme.screen.provider.ResourcesProvider
 import com.example.allofme.widget.adapter.ModelRecyclerAdapter
 import com.example.allofme.widget.adapter.listener.board.BoardListListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitAll
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -27,13 +32,18 @@ class ArticleListFragment: BaseFragment<ArticleListViewModel, FragmentArticleLis
     private val resourcesProvider by inject<ResourcesProvider>()
 
     private val adapter by lazy {
-        ModelRecyclerAdapter<BoardListModel, ArticleListViewModel> (
+        ModelRecyclerAdapter<ArticleListModel, ArticleListViewModel> (
             listOf(),
             viewModel,
             resourcesProvider,
             adapterListener = object : BoardListListener {
-                override fun onClickItem(model: BoardListModel) {
-                    //
+                override fun onClickItem(model: ArticleListModel) {
+                    startActivity(
+                        DetailActivity.newIntent(
+                            requireContext(),
+                            model.articleId
+                        )
+                    )
                 }
             }
         )
@@ -42,6 +52,12 @@ class ArticleListFragment: BaseFragment<ArticleListViewModel, FragmentArticleLis
     override fun initViews() = with(binding) {
         recyclerView.adapter = adapter
 
+    }
+
+    override fun onResume() = with(Dispatchers.IO) {
+        viewModel.fetchData()
+        binding.recyclerView.smoothScrollToPosition(0)
+        super.onResume()
     }
 
 
@@ -70,6 +86,7 @@ class ArticleListFragment: BaseFragment<ArticleListViewModel, FragmentArticleLis
 
     companion object {
         const val FIELD_CATEGORY_KEY = "fieldCategory"
+        const val ARTICLE_KEY = "Article"
 
         fun newInstance(
             fieldCategory: FieldCategory

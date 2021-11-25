@@ -1,9 +1,10 @@
 package com.example.allofme.screen.board.articlelist
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.allofme.data.repository.board.article.ArticleListRepository
-import com.example.allofme.model.board.BoardListModel
+import com.example.allofme.model.board.ArticleListModel
 import com.example.allofme.screen.base.BaseViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -13,8 +14,6 @@ class ArticleListViewModel(
     private val fieldCategory: FieldCategory,
     private var yearCategory: YearCategory = YearCategory.ALL
 ): BaseViewModel() {
-
-    val articleListLiveData = MutableLiveData<List<BoardListModel>>()
 
     var articleListStateLiveData = MutableLiveData<ArticleListState>(ArticleListState.Uninitialized)
 
@@ -30,9 +29,14 @@ class ArticleListViewModel(
             }
         }
 
+        Log.e("???sort", articleList.toString())
+        articleList = articleList.sortedByDescending { it.createdAt }
+        Log.e("???sort22", articleList.toString())
+
         articleListStateLiveData.value = ArticleListState.Success(
             articleList.map {
-                BoardListModel(
+                ArticleListModel(
+                    articleId = it.articleId,
                     id = it.id,
                     name = it.name,
                     title = it.title,
@@ -42,18 +46,6 @@ class ArticleListViewModel(
                 )
             }
         )
-//
-//        articleListLiveData.value = articleList.map {
-//            BoardListModel(
-//                id = it.id,
-//                name = it.name,
-//                title = it.title,
-//                year = it.year,
-//                field = it.field,
-//                profileImageUrl = it.profileImageUrl
-//            )
-//        }
-
     }
 
     fun setYear(year: YearCategory) {

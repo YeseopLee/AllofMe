@@ -7,15 +7,15 @@ import com.example.allofme.model.Model
 import com.example.allofme.screen.board.articlelist.FieldCategory
 import com.example.allofme.screen.board.articlelist.YearCategory
 
-data class BoardListModel (
+data class ArticleListModel (
     override val id: Long,
     override val type: CellType = CellType.ARTICLE_CELL,
+    val articleId: String,
     val name: String,
     val title: String,
     val year: YearCategory,
     val field: FieldCategory,
     val profileImageUrl: Uri? = null
 ) : Model(id, type) {
-
 
 }
