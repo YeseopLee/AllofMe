@@ -54,6 +54,11 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
     private var imageUriList : ArrayList<PostArticleModel> = arrayListOf() // GalleyActivity에서 받아오는 imageUriList
 
     override fun initViews() = with(binding) {
+
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
+        }
+
         viewModel.fetchData()
         recyclerView.adapter = descAdapter
         imageListRecyclerView.adapter = tempImageListAdapter
@@ -93,13 +98,17 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
                 override fun onClickItem(model: PostArticleModel) {
 
                     // 본문에 적합한 CellType으로 변경해서 보내줘야함.
-                    var transModel = model.copy(
-                        id = model.id,
+
+                    Log.e("clicked",model.toString())
+                    val transModel = model.copy(
+                        id = model.id+1,
                         type = CellType.ARTICLE_IMAGE_CELL,
                         url = model.url
                     )
+                    imageUriList.add(model)
+                    Log.e("clicked2",transModel.toString())
 
-                    var editTextList = descAdapter.currentList.filter { it.text != null }
+                    val editTextList = descAdapter.currentList.filter { it.text != null }
                     viewModel.stringList.clear()
                     for (i in editTextList.indices) {
                         viewModel.stringList.add(editTextList[i].text!!)
@@ -135,11 +144,11 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
             val title = binding.titleEditText.text.toString()
             val name = firebaseAuth.currentUser?.displayName.orEmpty()
-
             val userId = firebaseAuth.currentUser?.uid.orEmpty()
             val profileImage = firebaseAuth.currentUser?.photoUrl!!
 
             // 글 내용에 image가 들어있는 경우 image를 firebase storage에 우선 저장
+            Log.e("imageUriList",imageUriList.toString())
             if(imageUriList.isNotEmpty()) {
                 lifecycleScope.launch {
                     val results = uploadPhotoOnStorage(imageUriList)
@@ -155,6 +164,8 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
     }
     private suspend fun uploadPhotoOnStorage(modelList: ArrayList<PostArticleModel>) = withContext(Dispatchers.IO) {
         val tempUriList : ArrayList<String> = arrayListOf()
+
+        Log.e("modelList", modelList.toString())
         modelList.forEach {
             it.url?.let { url -> tempUriList.add(url) }
         }
@@ -188,6 +199,9 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
         val errorResults = results.filterIsInstance<Pair<Uri, Exception>>()
         val successResults = results.filterIsInstance<String>()
 
+
+        Log.e("SuccessResults", successResults.toString())
+        Log.e("Model",model.toString())
         var e = 0
         model.forEach {
             if(it.type == CellType.ARTICLE_IMAGE_CELL) {
