@@ -42,7 +42,7 @@ class ArticleListViewModel(
                     title = it.title,
                     year = it.year,
                     field = it.field,
-                    profileImageUrl = it.profileImageUrl
+                    profileImageUrl = it.profileImageUrl.toString()
                 )
             }
         )

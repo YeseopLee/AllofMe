@@ -23,6 +23,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/post_article"
+            android:maxLines="1"
+            android:maxLength="20"
+            android:ellipsize="end"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -37,6 +40,8 @@
         android:layout_marginTop="8dp"
         android:background="@null"
         android:hint="@string/post_title"
+        android:maxLines="1"
+        android:maxLength="20"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +50,7 @@
 
     <View
         android:layout_width="0dp"
-        android:layout_height="0.5dp"
+        android:layout_height="1dp"
         android:background="@color/gray_200"
         android:layout_marginTop="1dp"
         app:layout_constraintStart_toStartOf="@id/titleEditText"

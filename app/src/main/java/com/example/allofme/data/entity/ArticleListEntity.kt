@@ -14,7 +14,7 @@ data class ArticleListEntity(
     val title: String,
     val year: YearCategory,
     val field: FieldCategory,
-    val profileImageUrl: Uri? = null,
+    val profileImageUrl: String? = null,
     val createdAt: Long? = null
 ): Entity, Parcelable {
 

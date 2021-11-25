@@ -1,5 +1,6 @@
 package com.example.allofme.data.repository.board.article
 
+import android.net.Uri
 import android.util.Log
 import com.example.allofme.data.entity.ArticleListEntity
 import com.example.allofme.screen.board.articlelist.FieldCategory
@@ -37,6 +38,7 @@ class DefaultArticleListRepository(
                         year = YearCategory.valueOf(document["year"].toString()),
                         field = FieldCategory.valueOf(document["field"].toString()),
                         createdAt = document["createdAt"] as Long,
+                        profileImageUrl = document["profileImageUri"] as String?
                     )
                     articleList.add(item)
                 }

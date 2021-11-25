@@ -23,6 +23,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestoreSettings
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.time.Year
 import com.google.firebase.auth.GoogleAuthCredential as GoogleAuthCredential
 
 class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
@@ -87,7 +88,13 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
         userNameTextView.text = state.userName
         profileImageView.load(state.profileImageUri.toString())
         myFieldButton.text = state.field
-        myYearButton.text = state.year
+        myYearButton.text = when (state.year) {
+            "NEW" -> resourcesProvider.getString(YearCategory.NEW.categoryNameId)
+            "TWO_THREE" -> resourcesProvider.getString(YearCategory.TWO_THREE.categoryNameId)
+            "FOUR_FIVE" -> resourcesProvider.getString(YearCategory.FOUR_FIVE.categoryNameId)
+            "FIVE" -> resourcesProvider.getString(YearCategory.FIVE.categoryNameId)
+            else ->  "Field"
+        }
 
     }
 
