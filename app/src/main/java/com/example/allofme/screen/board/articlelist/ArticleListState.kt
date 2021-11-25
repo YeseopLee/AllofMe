@@ -1,9 +1,7 @@
 package com.example.allofme.screen.board.articlelist
 
 import androidx.annotation.StringRes
-import com.example.allofme.model.board.BoardListModel
-import com.example.allofme.model.board.postArticle.gallery.GalleryPhotoModel
-import com.example.allofme.screen.board.BoardState
+import com.example.allofme.model.board.ArticleListModel
 
 sealed class ArticleListState {
 
@@ -12,7 +10,7 @@ sealed class ArticleListState {
     object Loading: ArticleListState()
 
     data class Success(
-        val articleList: List<BoardListModel>
+        val articleList: List<ArticleListModel>
     ): ArticleListState()
 
     data class Error(

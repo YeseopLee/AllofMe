@@ -15,6 +15,9 @@
         android:theme="@style/Theme.AllofMe"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".screen.board.articlelist.detail.DetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".screen.board.postArticle.gallery.GalleryActivity"
             android:exported="false" />
         <activity

@@ -22,22 +22,21 @@ class DefaultArticleListRepository(
 
         var articleList = ArrayList<ArticleListEntity>()
 
-        var tempData: ArticleListEntity
-
         fireStore
             .collection("article")
             .get()
             .addOnSuccessListener { snapshot ->
 
                 for (document in snapshot) {
-                    if("2~3년차"==document["year"].toString()) Log.e("True","TrueSign")
                     Log.e("documnetId",document.id.toString())
                     val item = ArticleListEntity(
                         id = document.hashCode().toLong(),
+                        articleId = document.id,
                         name = document["name"] as String,
                         title = document["title"] as String,
                         year = YearCategory.valueOf(document["year"].toString()),
-                        field = FieldCategory.valueOf(document["field"].toString())
+                        field = FieldCategory.valueOf(document["field"].toString()),
+                        createdAt = document["createdAt"] as Long,
                     )
                     articleList.add(item)
                 }

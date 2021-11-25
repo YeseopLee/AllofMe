@@ -12,7 +12,7 @@ import com.example.allofme.widget.adapter.viewholder.*
 object ModelViewHolderMapper {
 
     @Suppress("UNCHECKED_CAST")
-    fun <M: Model> map(
+    fun <M : Model> map(
         parent: ViewGroup,
         type: CellType,
         viewModel: BaseViewModel,
@@ -30,7 +30,6 @@ object ModelViewHolderMapper {
                 viewModel,
                 resourcesProvider
             )
-
             CellType.ARTICLE_IMAGE_CELL -> PostImageViewHolder(
                 ViewholderPostArticleImageBinding.inflate(inflater, parent, false),
                 viewModel,
@@ -38,6 +37,11 @@ object ModelViewHolderMapper {
             )
             CellType.ARTICLE_TEMP_IMAGE_CELL -> TempImageViewHolder(
                 ViewholderPostArticleImagelistBinding.inflate(inflater, parent, false),
+                viewModel,
+                resourcesProvider
+            )
+            CellType.ARTICLE_DETAIL -> DetailArticleViewHolder(
+                ViewholderDetailArticleBinding.inflate(inflater, parent, false),
                 viewModel,
                 resourcesProvider
             )

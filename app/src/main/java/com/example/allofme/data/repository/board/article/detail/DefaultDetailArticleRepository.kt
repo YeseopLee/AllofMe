@@ -24,10 +24,9 @@ class DefaultDetailArticleRepository(
             .get()
             .addOnSuccessListener { snapshot ->
 
-                Log.e("defaultError", snapshot.get("content").toString())
-
                 item = ArticleEntity(
                     userId = snapshot.get("userId") as String,
+                    name = snapshot.get("name") as String,
                     title = snapshot.get("title") as String,
                     createdAt = snapshot.get("createdAt") as Long,
                     content = (snapshot.get("content") as ArrayList<Map<String, Any>>).map { article ->
@@ -44,6 +43,7 @@ class DefaultDetailArticleRepository(
 
                 item2 = ArticleEntity(
                     userId = snapshot.get("userId") as String,
+                    name = snapshot.get("name") as String,
                     title = snapshot.get("title") as String,
                     createdAt = snapshot.get("createdAt") as Long,
                     content = snapshot.get("content") as List<PostArticleModel>,

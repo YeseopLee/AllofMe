@@ -133,19 +133,22 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
         binding.addArticleButton.setOnClickListener {
 
-            val title : String = "제목"
+            val title = binding.titleEditText.text.toString()
+            val name = firebaseAuth.currentUser?.displayName.orEmpty()
+
             val userId = firebaseAuth.currentUser?.uid.orEmpty()
 
             // 글 내용에 image가 들어있는 경우 image를 firebase storage에 우선 저장
             if(imageUriList.isNotEmpty()) {
                 lifecycleScope.launch {
                     val results = uploadPhotoOnStorage(imageUriList)
-                    afterUploadPhoto(results, title, state.articleDescList, userId)
+                    afterUploadPhoto(results, title, name, state.articleDescList, userId)
                 }
             }
             else {
-                uploadArticle(userId, title, state.articleDescList)
+                uploadArticle(userId, title, name,  state.articleDescList)
             }
+
         }
 
     }
@@ -154,8 +157,13 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
         modelList.forEach {
             it.url?.let { url -> tempUriList.add(url) }
         }
+
+        Log.e("uriList", tempUriList.toString())
+
         val uriList = tempUriList.toList()
-        val uploadadDeferred: List<Deferred<Any>> = uriList.mapIndexed { index, uri ->
+
+        Log.e("uriList2", uriList.toString())
+        val uploadedDeferred: List<Deferred<Any>> = uriList.mapIndexed { index, uri ->
             lifecycleScope.async {
                 try {
                     val fileName = "image${index}.png"
@@ -172,10 +180,10 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
                 }
             }
         }
-        return@withContext uploadadDeferred.awaitAll()
+        return@withContext uploadedDeferred.awaitAll()
     }
 
-    private fun afterUploadPhoto(results: List<Any>, title: String, model: List<PostArticleModel>, userId: String) {
+    private fun afterUploadPhoto(results: List<Any>, title: String, name: String, model: List<PostArticleModel>, userId: String) {
         val errorResults = results.filterIsInstance<Pair<Uri, Exception>>()
         val successResults = results.filterIsInstance<String>()
 
@@ -195,21 +203,23 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
                 //uploadError()
             }
             else -> {
-                uploadArticle(userId, title, model)
+                uploadArticle(userId, title, name, model)
             }
         }
     }
 
-    private fun uploadArticle(userId: String, title: String, model: List<PostArticleModel>) {
+    private fun uploadArticle(userId: String, title: String, name: String, model: List<PostArticleModel>) {
 
 
-        val article = ArticleEntity(userId, title, System.currentTimeMillis(), model, viewModel.year, viewModel.field)
+        val article = ArticleEntity(userId, title, name, System.currentTimeMillis(), model, viewModel.year, viewModel.field)
 
 
         Log.e("uploadArticle?", article.toString())
         firestore
             .collection("article")
             .add(article)
+
+        finish()
 
     }
 
