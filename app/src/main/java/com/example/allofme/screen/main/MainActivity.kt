@@ -1,5 +1,6 @@
 package com.example.allofme.screen.main
 
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import com.example.allofme.R
 import com.example.allofme.databinding.ActivityMainBinding
@@ -40,6 +41,10 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         }
     }
 
+    fun goToTab(mainTabMenu: MainTabMenu) {
+        binding.bottomNav.selectedItemId = mainTabMenu.menuId
+    }
+
     private fun showFragment(fragment: Fragment, tag: String) {
         val findFragment = supportFragmentManager.findFragmentByTag(tag)
         supportFragmentManager.fragments.forEach { fm ->
@@ -55,8 +60,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
         }
     }
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-//    }
+}
+
+enum class MainTabMenu(@IdRes val menuId: Int) {
+    HOME(R.id.menu_home), MY(R.id.menu_my)
 }
