@@ -36,7 +36,7 @@ val appModule = module {
     viewModel { BoardViewModel() }
     viewModel { (fieldCategory: FieldCategory) -> ArticleListViewModel(get(), fieldCategory) }
     viewModel { MyViewModel(get(),get())}
-    viewModel { PostArticleViewModel(get(), get(), get()) }
+    viewModel { PostArticleViewModel(get(), get()) }
     viewModel { GalleryViewModel(get()) }
     viewModel { (articleEntity: ArticleEntity) -> DetailViewModel (get()) }
 

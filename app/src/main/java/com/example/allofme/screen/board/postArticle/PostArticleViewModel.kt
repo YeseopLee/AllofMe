@@ -1,6 +1,8 @@
 package com.example.allofme.screen.board.postArticle
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.databinding.ObservableChar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,11 +17,12 @@ import com.example.allofme.screen.base.BaseViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 class PostArticleViewModel(
     private val userRepository: UserRepository,
-    private val detailArticleRepository: DetailArticleRepository,
     private val firebaseAuth: FirebaseAuth
 ) : BaseViewModel() {
 
@@ -37,11 +40,6 @@ class PostArticleViewModel(
 
     init {
         getUser()
-        tempGetData()
-    }
-
-    private fun tempGetData() = viewModelScope.launch {
-        //Log.e("test", detailArticleRepository.getArticle("0HvTtdFqJRagfCX4xeMo").toString())
     }
 
     private fun getUser() = viewModelScope.launch {
@@ -57,7 +55,7 @@ class PostArticleViewModel(
         postArticleStateLiveData.value = PostArticleState.Success(
             articleDescList.map {
                 PostArticleModel(
-                    id = it.hashCode().toLong(),
+                    id = it.id,
                     type = it.type,
                     text = it.text,
                     url = it.url
@@ -79,13 +77,30 @@ class PostArticleViewModel(
         }
 
         articleDescList.add(model)
-        articleDescList.add(PostArticleModel(id = model.id+1, type=CellType.ARTICLE_EDIT_CELL))
+        articleDescList.add(PostArticleModel(id = model.id, type=CellType.ARTICLE_EDIT_CELL))
         viewHolderCount += 2
 
-        Log.e("???",articleDescList.toString())
         fetchData()
     }
 
+    fun removeImage(model: PostArticleModel) = viewModelScope.launch {
+
+        val index = articleDescList.indexOf(model)
+
+        async {
+            articleDescList.removeAt(index)
+        }.await()
+
+        if(articleDescList[index].text == null) {
+            articleDescList.removeAt(index)
+        }
+        else {
+            articleDescList[index-1].text = articleDescList[index-1].text + "\n" + articleDescList[index].text
+            articleDescList.removeAt(index)
+        }
+
+        fetchData()
+    }
 
 }
 

@@ -4,19 +4,6 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageButton
-        android:id="@+id/closeButton"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:background="@drawable/bg_round_corner_8_black"
-        android:foreground="@drawable/ic_close"
-        android:elevation="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:backgroundTint="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"

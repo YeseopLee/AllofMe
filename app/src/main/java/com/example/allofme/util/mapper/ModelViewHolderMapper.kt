@@ -45,6 +45,11 @@ object ModelViewHolderMapper {
                 viewModel,
                 resourcesProvider
             )
+            CellType.ARTICLE_DETAIL_IMAGE -> DetailArticleImageViewHolder(
+                ViewholderDetailArticleImageBinding.inflate(inflater, parent, false),
+                viewModel,
+                resourcesProvider
+            )
             CellType.GALLERY_PHOTO -> GalleryPhotoViewHolder(
                 ViewholderGalleryPhotoItemBinding.inflate(inflater, parent, false),
                 viewModel,

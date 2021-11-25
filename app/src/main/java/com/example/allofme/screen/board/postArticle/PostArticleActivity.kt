@@ -52,6 +52,7 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
     private val storage: FirebaseStorage by inject<FirebaseStorage>()
 
     private var imageUriList : ArrayList<PostArticleModel> = arrayListOf() // GalleyActivity에서 받아오는 imageUriList
+    private var tempImageUriList : ArrayList<PostArticleModel> = arrayListOf()
 
     override fun initViews() = with(binding) {
 
@@ -79,11 +80,12 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
             resourcesProvider,
             adapterListener = object : PostArticleListener {
                 override fun onClickItem(model: PostArticleModel) {
-                    //
+                    Log.e("bigModel", model.toString())
                 }
 
-                override fun onSaveItem(mode: PostArticleModel) {
-                    //
+                override fun onRemoveItem(model: PostArticleModel) {
+                    Log.e("modelId",model.toString())
+                    viewModel.removeImage(model)
                 }
             }
         )
@@ -98,14 +100,12 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
                 override fun onClickItem(model: PostArticleModel) {
 
                     // 본문에 적합한 CellType으로 변경해서 보내줘야함.
-
                     Log.e("clicked",model.toString())
                     val transModel = model.copy(
-                        id = model.id+1,
+                        id = model.id,
                         type = CellType.ARTICLE_IMAGE_CELL,
                         url = model.url
                     )
-                    imageUriList.add(model)
                     Log.e("clicked2",transModel.toString())
 
                     val editTextList = descAdapter.currentList.filter { it.text != null }
@@ -116,8 +116,18 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
                     viewModel.updateDescription(transModel)
                     binding.recyclerView.setItemViewCacheSize(viewModel.articleDescList.size)
                 }
+
+                override fun removeItem(model: PostArticleModel) {
+                    val index = imageUriList.indexOf(model)
+                    imageUriList.removeAt(index)
+                    notifyData()
+                }
             }
         )
+    }
+
+    private fun notifyData() {
+        tempImageListAdapter.notifyDataSetChanged()
     }
 
 
@@ -146,12 +156,18 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
             val name = firebaseAuth.currentUser?.displayName.orEmpty()
             val userId = firebaseAuth.currentUser?.uid.orEmpty()
             val profileImage = firebaseAuth.currentUser?.photoUrl!!
+            val uploadedImageUriList : ArrayList<PostArticleModel> = arrayListOf()
+
+            // 실제로 본문에 삽입한 imageList
+            state.articleDescList.forEach {
+                if( it.type == CellType.ARTICLE_IMAGE_CELL )
+                    uploadedImageUriList.add(it)
+            }
 
             // 글 내용에 image가 들어있는 경우 image를 firebase storage에 우선 저장
-            Log.e("imageUriList",imageUriList.toString())
-            if(imageUriList.isNotEmpty()) {
+            if(uploadedImageUriList.isNotEmpty()) {
                 lifecycleScope.launch {
-                    val results = uploadPhotoOnStorage(imageUriList)
+                    val results = uploadPhotoOnStorage(uploadedImageUriList)
                     afterUploadPhoto(results, title, name, state.articleDescList, userId, profileImage)
                 }
             }
