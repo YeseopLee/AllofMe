@@ -1,15 +1,22 @@
 package com.example.allofme.screen.board
 
-import android.util.Log
+import android.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import com.example.allofme.R
+import com.example.allofme.data.preference.MyPreferenceManager
 import com.example.allofme.databinding.FragmentBoardBinding
 import com.example.allofme.screen.base.BaseFragment
 import com.example.allofme.screen.board.articlelist.ArticleListFragment
 import com.example.allofme.screen.board.articlelist.FieldCategory
 import com.example.allofme.screen.board.articlelist.YearCategory
 import com.example.allofme.screen.board.postArticle.PostArticleActivity
+import com.example.allofme.screen.main.MainActivity
+import com.example.allofme.screen.main.MainTabMenu
 import com.example.allofme.widget.adapter.ArticleListFragmentPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class BoardFragment: BaseFragment<BoardViewModel,FragmentBoardBinding>() {
@@ -19,6 +26,8 @@ class BoardFragment: BaseFragment<BoardViewModel,FragmentBoardBinding>() {
     override fun getViewBinding(): FragmentBoardBinding = FragmentBoardBinding.inflate(layoutInflater)
 
     private lateinit var viewPagerAdapter: ArticleListFragmentPagerAdapter
+
+    private val myPreferenceManager by inject<MyPreferenceManager>()
 
     override fun initViews() = with(binding) {
 
@@ -45,9 +54,36 @@ class BoardFragment: BaseFragment<BoardViewModel,FragmentBoardBinding>() {
         }
 
         postArticleButton.setOnClickListener {
-            startActivity(PostArticleActivity.newIntent(requireContext()))
+            userSessionCheck()
         }
 
+    }
+
+    private fun userSessionCheck() {
+        if (myPreferenceManager.getIdToken() == null) {
+            alertLogin {
+                lifecycleScope.launch {
+                    (requireActivity() as MainActivity).goToTab(MainTabMenu.MY)
+                }
+            }
+        } else {
+            startActivity(PostArticleActivity.newIntent(requireContext()))
+        }
+    }
+
+    private fun alertLogin(function: () -> Unit) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("로그인이 필요합니다.")
+            .setMessage("글을 작성하려면 로그인이 필요합니다. 로그인하러 가시겠습니까?")
+            .setPositiveButton("이동") { dialog, _ ->
+                function()
+                dialog.dismiss()
+            }
+            .setNegativeButton("취소") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
     }
 
     private fun chipChange(year: YearCategory) {

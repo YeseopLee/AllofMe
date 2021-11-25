@@ -121,10 +121,10 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.category_field_all))
-            .setNeutralButton(resources.getString(R.string.alert_cancel)) {
-                _, _ ->
+            .setNeutralButton(resources.getString(R.string.alert_cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
-            .setPositiveButton(resources.getString(R.string.alert_confirm)) { _, _ ->
+            .setPositiveButton(resources.getString(R.string.alert_confirm)) { dialog, _ ->
                 myField = fieldItems[checkItem]
 
                 val userInfo = hashMapOf(
@@ -138,6 +138,8 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
                     .set(userInfo, SetOptions.merge())
 
                 binding.myFieldButton.text = myField
+
+                dialog.dismiss()
             }
             .setSingleChoiceItems(fieldItems, checkItem) { dialog, which ->
                 checkItem = which
