@@ -137,16 +137,17 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
             val name = firebaseAuth.currentUser?.displayName.orEmpty()
 
             val userId = firebaseAuth.currentUser?.uid.orEmpty()
+            val profileImage = firebaseAuth.currentUser?.photoUrl!!
 
             // 글 내용에 image가 들어있는 경우 image를 firebase storage에 우선 저장
             if(imageUriList.isNotEmpty()) {
                 lifecycleScope.launch {
                     val results = uploadPhotoOnStorage(imageUriList)
-                    afterUploadPhoto(results, title, name, state.articleDescList, userId)
+                    afterUploadPhoto(results, title, name, state.articleDescList, userId, profileImage)
                 }
             }
             else {
-                uploadArticle(userId, title, name,  state.articleDescList)
+                uploadArticle(userId, title, name,  state.articleDescList, profileImage)
             }
 
         }
@@ -183,7 +184,7 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
         return@withContext uploadedDeferred.awaitAll()
     }
 
-    private fun afterUploadPhoto(results: List<Any>, title: String, name: String, model: List<PostArticleModel>, userId: String) {
+    private fun afterUploadPhoto(results: List<Any>, title: String, name: String, model: List<PostArticleModel>, userId: String, profileImage: Uri) {
         val errorResults = results.filterIsInstance<Pair<Uri, Exception>>()
         val successResults = results.filterIsInstance<String>()
 
@@ -203,15 +204,15 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
                 //uploadError()
             }
             else -> {
-                uploadArticle(userId, title, name, model)
+                uploadArticle(userId, title, name, model, profileImage)
             }
         }
     }
 
-    private fun uploadArticle(userId: String, title: String, name: String, model: List<PostArticleModel>) {
+    private fun uploadArticle(userId: String, title: String, name: String, model: List<PostArticleModel>, profileImage: Uri) {
 
 
-        val article = ArticleEntity(userId, title, name, System.currentTimeMillis(), model, viewModel.year, viewModel.field)
+        val article = ArticleEntity(userId, title, name, System.currentTimeMillis(), model, viewModel.year, viewModel.field, profileImage.toString())
 
 
         Log.e("uploadArticle?", article.toString())

@@ -1,5 +1,6 @@
 package com.example.allofme.data.entity
 
+import android.net.Uri
 import android.os.Parcelable
 import com.example.allofme.model.board.postArticle.PostArticleModel
 import com.example.allofme.screen.board.articlelist.FieldCategory
@@ -14,5 +15,6 @@ data class ArticleEntity(
     val createdAt: Long,
     val content: List<PostArticleModel>,
     val year: String?,
-    val field: String?
+    val field: String?,
+    val profileImageUri: String?
 ) : Parcelable

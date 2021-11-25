@@ -4,6 +4,7 @@ import com.example.allofme.databinding.ViewholderBoardBinding
 import com.example.allofme.model.board.ArticleListModel
 import com.example.allofme.screen.base.BaseViewModel
 import com.example.allofme.screen.provider.ResourcesProvider
+import com.example.allofme.util.load
 import com.example.allofme.widget.adapter.listener.AdapterListener
 import com.example.allofme.widget.adapter.listener.board.BoardListListener
 
@@ -25,7 +26,7 @@ class BoardViewHolder(
     override fun bindData(model: ArticleListModel)  {
         super.bindData(model)
         with(binding) {
-            //profileImageView.
+            profileImageView.load(model.profileImageUrl.toString())
             nameTextView.text = model.name
             titleTextView.text = model.title
             fieldChip.text = resourcesProvider.getString(model.field.categoryNameId)

@@ -1,5 +1,6 @@
 package com.example.allofme.data.repository.board.article.detail
 
+import android.net.Uri
 import android.util.Log
 import com.example.allofme.data.entity.ArticleEntity
 import com.example.allofme.model.CellType
@@ -38,7 +39,8 @@ class DefaultDetailArticleRepository(
                         )
                     },
                     year = snapshot.get("year") as String,
-                    field = snapshot.get("field") as String
+                    field = snapshot.get("field") as String,
+                    profileImageUri = snapshot.get("profileImageUri") as String
                 )
 
                 item2 = ArticleEntity(
@@ -48,7 +50,8 @@ class DefaultDetailArticleRepository(
                     createdAt = snapshot.get("createdAt") as Long,
                     content = snapshot.get("content") as List<PostArticleModel>,
                     year = snapshot.get("year") as String,
-                    field = snapshot.get("field") as String
+                    field = snapshot.get("field") as String,
+                    profileImageUri = snapshot.get("profileImageUri") as String
                 )
             }
             .await()

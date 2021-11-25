@@ -15,7 +15,7 @@ data class ArticleListModel (
     val title: String,
     val year: YearCategory,
     val field: FieldCategory,
-    val profileImageUrl: Uri? = null
+    val profileImageUrl: String? = null
 ) : Model(id, type) {
 
 }
