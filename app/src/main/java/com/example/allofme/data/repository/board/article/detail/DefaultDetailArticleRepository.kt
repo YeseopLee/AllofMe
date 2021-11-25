@@ -56,9 +56,6 @@ class DefaultDetailArticleRepository(
             }
             .await()
 
-        Log.e("whatIsRealItem?",item.toString())
-        Log.e("whatIsRealItem?2",item2.toString())
-
         return@withContext item
     }
 }

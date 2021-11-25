@@ -65,8 +65,15 @@ class PostArticleViewModel(
 
     }
 
+
+
     fun updateDescription(model: PostArticleModel) = viewModelScope.launch {
         postArticleStateLiveData.value = PostArticleState.Loading
+
+        /*
+            데이터가 변경 될 때 view의 editText의 마지막 text가  model에 바로 담아지지 않는현상이 존재함.
+            그래서 데이터를 넘기기전에 미리 view에서 editText들의 string 배열을 가져와서 수동으로 직접 삽입하였다.
+         */
 
         var e = 0
         for (i in 0 until articleDescList.size) {
@@ -85,11 +92,20 @@ class PostArticleViewModel(
 
     fun removeImage(model: PostArticleModel) = viewModelScope.launch {
 
+        var e = 0
+        for (i in 0 until articleDescList.size) {
+            if(articleDescList[i].type == CellType.ARTICLE_EDIT_CELL) {
+                articleDescList[i].text = stringList[e]
+                e += 1
+            }
+        }
+
         val index = articleDescList.indexOf(model)
 
         async {
             articleDescList.removeAt(index)
         }.await()
+
 
         if(articleDescList[index].text == null) {
             articleDescList.removeAt(index)

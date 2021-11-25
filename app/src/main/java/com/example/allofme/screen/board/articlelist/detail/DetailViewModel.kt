@@ -41,7 +41,5 @@ class DetailViewModel(
         detailArticleStateLiveData.value = DetailState.Success(
             article
         )
-
-        Log.e("article", article.toString())
     }
 }

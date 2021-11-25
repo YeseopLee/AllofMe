@@ -23,15 +23,14 @@ class ArticleListViewModel(
 
         var articleList = articleListRepository.getList(fieldCategory)
 
+        // Chip이 All이 아닐때, YearCategory에 따라서 필터링
         if(yearCategory != YearCategory.ALL) {
             articleList = articleList.filter {
                 it.year == yearCategory
             }
         }
 
-        Log.e("???sort", articleList.toString())
         articleList = articleList.sortedByDescending { it.createdAt }
-        Log.e("???sort22", articleList.toString())
 
         articleListStateLiveData.value = ArticleListState.Success(
             articleList.map {
