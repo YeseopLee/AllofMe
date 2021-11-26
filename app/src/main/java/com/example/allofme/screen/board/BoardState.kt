@@ -1,6 +1,7 @@
 package com.example.allofme.screen.board
 
 import androidx.annotation.StringRes
+import com.example.allofme.data.entity.UserEntity
 
 sealed class BoardState {
 
@@ -8,7 +9,9 @@ sealed class BoardState {
 
     object Loading: BoardState()
 
-    object Success: BoardState()
+    data class Success(
+        val UserInfo: UserEntity
+    ): BoardState()
 
     data class Error(
         @StringRes val messageId: Int

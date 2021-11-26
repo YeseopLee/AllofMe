@@ -35,7 +35,7 @@ import org.koin.dsl.module
 val appModule = module {
 
     viewModel { MainViewModel() }
-    viewModel { BoardViewModel() }
+    viewModel { BoardViewModel(get()) }
     viewModel { (fieldCategory: FieldCategory) -> ArticleListViewModel(get(), fieldCategory) }
     viewModel { MyViewModel(get(),get())}
     viewModel { PostArticleViewModel(get(), get(), get(), get(), get()) }

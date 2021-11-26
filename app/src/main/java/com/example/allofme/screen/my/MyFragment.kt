@@ -32,7 +32,8 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
 
     override fun getViewBinding(): FragmentMyBinding = FragmentMyBinding.inflate(layoutInflater)
 
-    private val firestore: FirebaseFirestore by inject<FirebaseFirestore>()
+    private val fireStore: FirebaseFirestore by inject<FirebaseFirestore>()
+
     private val resourcesProvider by inject<ResourcesProvider>()
 
     override fun observeData() = viewModel.myStateLiveData.observe(viewLifecycleOwner) {
@@ -74,10 +75,10 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     val user = firebaseAuth.currentUser
-                    viewModel.setUserInfo(user) // MyState.Registered에 user 값들을 저장한다.
+                    viewModel.setInitUserInfo(user) // MyState.Registered에 user 값들을 저장한다.
                 } else {
                     firebaseAuth.signOut()
-                    viewModel.setUserInfo(null)
+                    viewModel.setInitUserInfo(null)
                 }
             }
     }
@@ -95,7 +96,6 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
             "FIVE" -> resourcesProvider.getString(YearCategory.FIVE.categoryNameId)
             else ->  "Field"
         }
-
     }
 
     private fun handleLoadingState() = with(binding) {
@@ -122,9 +122,7 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
 
         val fieldItems = arrayOf(FieldCategory.ANDROID.toString(), FieldCategory.BACKEND.toString(), FieldCategory.IOS.toString(), FieldCategory.WEB.toString())
         var checkItem = 0
-        var myField: String?
-
-        //var test: String = resourcesProvider.getString(FieldCategory.ANDROID.categoryNameId)
+        var myField = "ANDROID"
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.category_field_all))
@@ -134,18 +132,8 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
             .setPositiveButton(resources.getString(R.string.alert_confirm)) { dialog, _ ->
                 myField = fieldItems[checkItem]
 
-                val userInfo = hashMapOf(
-                    "displayName" to firebaseAuth.currentUser!!.displayName,
-                    "field" to myField
-                )
-
-                firestore
-                    .collection("user")
-                    .document(firebaseAuth.currentUser!!.uid)
-                    .set(userInfo, SetOptions.merge())
-
-                binding.myFieldButton.text = myField
-
+                viewModel.setField(firebaseAuth.currentUser!!.uid, firebaseAuth.currentUser!!.displayName!!, myField)
+                binding.myFieldButton.text = FieldCategory.valueOf(myField!!).toString()
                 dialog.dismiss()
             }
             .setSingleChoiceItems(fieldItems, checkItem) { dialog, which ->
@@ -162,7 +150,7 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
             resourcesProvider.getString(YearCategory.FIVE.categoryNameId)
         )
         var checkItem = 0
-        var myYear: String? = null
+        var myYear = "NEW"
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.category_field_all))
@@ -178,17 +166,9 @@ class MyFragment:BaseFragment<MyViewModel, FragmentMyBinding>() {
                     3 -> myYear = "FIVE"
                 }
 
-                val userInfo = hashMapOf(
-                    "displayName" to firebaseAuth.currentUser!!.displayName,
-                    "year" to myYear
-                )
+                viewModel.setYear(firebaseAuth.currentUser!!.uid, firebaseAuth.currentUser!!.displayName!!, myYear)
 
-                firestore
-                    .collection("user")
-                    .document(firebaseAuth.currentUser!!.uid)
-                    .set(userInfo, SetOptions.merge())
-
-                binding.myYearButton.text = myYear
+                binding.myYearButton.text = resourcesProvider.getString(YearCategory.valueOf(myYear!!).categoryNameId)
             }
             .setSingleChoiceItems(yearItems, checkItem) { dialog, which ->
                 checkItem = which

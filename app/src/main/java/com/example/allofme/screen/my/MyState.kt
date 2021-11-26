@@ -18,8 +18,8 @@ sealed class MyState {
         data class Registered(
             val userName: String,
             val profileImageUri: Uri?,
-            val field: String? = null,
-            val year: String? = null
+            val field: String,
+            val year: String
         ) : Success()
 
         object NotRegistered: Success()
