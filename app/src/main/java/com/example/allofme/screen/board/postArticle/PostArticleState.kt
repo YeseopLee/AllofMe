@@ -11,4 +11,6 @@ sealed class PostArticleState {
     data class Success(
         val articleDescList: List<PostArticleModel>
     ): PostArticleState()
+
+
 }

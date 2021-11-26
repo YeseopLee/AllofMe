@@ -172,15 +172,10 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
             // 글 내용에 image가 들어있는 경우 image를 firebase storage에 우선 저장
             if(uploadedImageUriList.isNotEmpty()) {
-                lifecycleScope.launch {
-                    val results = uploadPhotoOnStorage(uploadedImageUriList)
-                    afterUploadPhoto(results, title, name, state.articleDescList, userId, profileImage)
-                }
+                viewModel.uploadPhotoOnStorage(title, name, imageUriList, state.articleDescList, userId, profileImage)
+            } else {
+                viewModel.uploadArticle(userId, title, name, state.articleDescList, profileImage)
             }
-            else {
-                uploadArticle(userId, title, name,  state.articleDescList, profileImage)
-            }
-
         }
 
     }
@@ -214,43 +209,43 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
         return@withContext uploadedDeferred.awaitAll()
     }
 
-    private fun afterUploadPhoto(results: List<Any>, title: String, name: String, model: List<PostArticleModel>, userId: String, profileImage: Uri) {
-        val errorResults = results.filterIsInstance<Pair<Uri, Exception>>()
-        val successResults = results.filterIsInstance<String>()
+//    private fun afterUploadPhoto(results: List<Any>, title: String, name: String, model: List<PostArticleModel>, userId: String, profileImage: Uri) {
+//        val errorResults = results.filterIsInstance<Pair<Uri, Exception>>()
+//        val successResults = results.filterIsInstance<String>()
+//
+//        // URL을 firestore에 적합한 타입으로 변경한다.
+//        var e = 0
+//        model.forEach {
+//            if(it.type == CellType.ARTICLE_IMAGE_CELL) {
+//                it.url = successResults[e]
+//                e += 1
+//            }
+//        }
+//
+//        when {
+//            errorResults.isNotEmpty() && successResults.isNotEmpty() -> {
+//                //photoUploadErrorButContinurDialog(errorResults, successResults, title, model, userId)
+//            }
+//            errorResults.isNotEmpty() && successResults.isEmpty() -> {
+//                //uploadError()
+//            }
+//            else -> {
+//                uploadArticle(userId, title, name, model, profileImage)
+//            }
+//        }
+//    }
 
-        // URL을 firestore에 적합한 타입으로 변경한다.
-        var e = 0
-        model.forEach {
-            if(it.type == CellType.ARTICLE_IMAGE_CELL) {
-                it.url = successResults[e]
-                e += 1
-            }
-        }
-
-        when {
-            errorResults.isNotEmpty() && successResults.isNotEmpty() -> {
-                //photoUploadErrorButContinurDialog(errorResults, successResults, title, model, userId)
-            }
-            errorResults.isNotEmpty() && successResults.isEmpty() -> {
-                //uploadError()
-            }
-            else -> {
-                uploadArticle(userId, title, name, model, profileImage)
-            }
-        }
-    }
-
-    private fun uploadArticle(userId: String, title: String, name: String, model: List<PostArticleModel>, profileImage: Uri) {
-
-        val article = ArticleEntity(userId, title, name, System.currentTimeMillis(), model, viewModel.year, viewModel.field, profileImage.toString())
-
-        firestore
-            .collection("article")
-            .add(article)
-
-        finish()
-
-    }
+//    private fun uploadArticle(userId: String, title: String, name: String, model: List<PostArticleModel>, profileImage: Uri) {
+//
+//        val article = ArticleEntity(userId, title, name, System.currentTimeMillis(), model, viewModel.year, viewModel.field, profileImage.toString())
+//
+//        firestore
+//            .collection("article")
+//            .add(article)
+//
+//        finish()
+//
+//    }
 
     // 저장소 권한 획득
     private fun checkExternalStoragePermission(uploadAction: () -> Unit) {

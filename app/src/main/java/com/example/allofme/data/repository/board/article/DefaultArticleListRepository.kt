@@ -13,7 +13,6 @@ import kotlinx.coroutines.withContext
 
 class DefaultArticleListRepository(
     private val ioDispatcher: CoroutineDispatcher,
-    private val resourcesProvider: ResourcesProvider,
     private val fireStore: FirebaseFirestore
 ) : ArticleListRepository {
 
