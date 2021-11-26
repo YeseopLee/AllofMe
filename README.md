@@ -61,7 +61,9 @@ for (i in editTextList.indices) {
   viewModel.stringList.add(editTextList[i].text!!)
 }
 ```
-그러나 근본적인 해결방법은 아닌듯.
+데이터 구조 및 코드를 크게 건드리지 않으면서 가장 간단하게 해결할 수 있는 방법이라고 생각하였다.
+다른 방법으로는, 처음부터 one-way형식의 viewbinding을 사용하기보다는 two-way의 databinding을 사용하여 livedata에 직접 연결하는 방법도 생각해볼 수 있고,
+또는 state.success에 담기는 model data를 view에서 직접 넣어주는방법도 가능하겠지만, view에서 state상태를 직접 바꾸는 방법은 그닥 좋지 못한것이라고 생각한다.
 
 
 
