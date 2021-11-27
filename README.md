@@ -11,15 +11,8 @@ Coroutines, Koin, View-Binding
 
 ## 동작
 
-![AlertLogin](https://user-images.githubusercontent.com/67935576/143571608-a1b6cea3-b090-4170-841c-c26893de10cf.png)
+![Flow](https://user-images.githubusercontent.com/67935576/143563620-227b38ad-8220-4152-bdc0-60abb84fb091.gif)![Flow2](https://user-images.githubusercontent.com/67935576/143571787-2324e17e-9a60-49b5-82a0-d86167722a70.gif)![Flow3](https://user-images.githubusercontent.com/67935576/143681339-2e99428c-99aa-4fac-bd37-dbf93a62f281.gif)![AlertLogin](https://user-images.githubusercontent.com/67935576/143571608-a1b6cea3-b090-4170-841c-c26893de10cf.png)![AlertField](https://user-images.githubusercontent.com/67935576/143571611-61b8966c-abc4-4dfe-88dc-90872052081d.png)![cantload](https://user-images.githubusercontent.com/67935576/143686593-7e425233-636c-4222-8375-a87d4262416d.png)
 
-![AlertField](https://user-images.githubusercontent.com/67935576/143571611-61b8966c-abc4-4dfe-88dc-90872052081d.png)
-
-![Flow](https://user-images.githubusercontent.com/67935576/143563620-227b38ad-8220-4152-bdc0-60abb84fb091.gif)
-
-![Flow2](https://user-images.githubusercontent.com/67935576/143571787-2324e17e-9a60-49b5-82a0-d86167722a70.gif)
-
-![Flow3](https://user-images.githubusercontent.com/67935576/143681339-2e99428c-99aa-4fac-bd37-dbf93a62f281.gif)
 
 ## 구현
 
