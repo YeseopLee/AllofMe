@@ -54,7 +54,8 @@ class ArticleListFragment: BaseFragment<ArticleListViewModel, FragmentArticleLis
 
     }
 
-    override fun onResume() = with(Dispatchers.IO) {
+    override fun onResume() {
+        Log.e("OnResume","OnResume")
         viewModel.fetchData()
         super.onResume()
     }

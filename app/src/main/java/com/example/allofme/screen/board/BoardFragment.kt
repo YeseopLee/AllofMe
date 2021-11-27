@@ -33,7 +33,7 @@ class BoardFragment: BaseFragment<BoardViewModel,FragmentBoardBinding>() {
 
     override fun initViews() = with(binding) {
 
-        viewModel.initViewModel()
+        initViewPager()
 
         orderChipGroup.setOnCheckedChangeListener { _, checkedId ->
             when(checkedId) {
@@ -69,9 +69,10 @@ class BoardFragment: BaseFragment<BoardViewModel,FragmentBoardBinding>() {
                 }
             }
         } else {
-            startActivity(PostArticleActivity.newIntent(requireContext()))
+            startActivity(PostArticleActivity.newIntent(requireContext(),null))
         }
     }
+
 
     private fun alertLogin(function: () -> Unit) {
         AlertDialog.Builder(requireContext())
@@ -98,7 +99,6 @@ class BoardFragment: BaseFragment<BoardViewModel,FragmentBoardBinding>() {
     override fun observeData() = viewModel.boardStateLiveData.observe(viewLifecycleOwner) {
         when (it) {
             is BoardState.Success -> {
-                initViewPager()
             }
             else -> Unit
         }

@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserEntity (
-    val displayName: String,
-    val year: String,
-    val field: String
+    val displayName: String?,
+    val year: String?,
+    val field: String?
 ): Parcelable

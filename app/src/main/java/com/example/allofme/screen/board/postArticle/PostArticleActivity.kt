@@ -1,5 +1,6 @@
 package com.example.allofme.screen.board.postArticle
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -12,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -22,8 +24,11 @@ import com.example.allofme.databinding.ActivityPostArticleBinding
 import com.example.allofme.model.CellType
 import com.example.allofme.model.board.postArticle.PostArticleModel
 import com.example.allofme.screen.base.BaseActivity
+import com.example.allofme.screen.board.articlelist.ArticleListFragment
+import com.example.allofme.screen.board.articlelist.detail.DetailActivity
 import com.example.allofme.screen.board.postArticle.gallery.GalleryActivity
 import com.example.allofme.screen.board.postArticle.gallery.GalleryActivity.Companion.URI_LIST_KEY
+import com.example.allofme.screen.main.MainActivity
 import com.example.allofme.screen.my.MyState
 import com.example.allofme.screen.provider.ResourcesProvider
 import com.example.allofme.widget.adapter.ModelRecyclerAdapter
@@ -49,8 +54,10 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
     private val resourcesProvider by inject<ResourcesProvider>()
 
     private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
-    private val firestore: FirebaseFirestore by inject<FirebaseFirestore>()
-    private val storage: FirebaseStorage by inject<FirebaseStorage>()
+
+    private val articleId by lazy {
+        intent.getStringExtra(DetailActivity.ARTICLE_KEY)
+    }
 
     private var imageUriList : ArrayList<PostArticleModel> = arrayListOf() // GalleyActivity에서 받아오는 imageUriList
 
@@ -60,9 +67,16 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
             finish()
         }
 
-        viewModel.fetchData()
         recyclerView.adapter = descAdapter
         imageListRecyclerView.adapter = tempImageListAdapter
+
+        // articleId가 있는경우 = 새글쓰기가 아니라 글 수정인 경우.
+        articleId?.let {
+            viewModel.getArticle(articleId!!)
+        } ?: kotlin.run {
+            viewModel.initData()
+        }
+
 
         addPhotoButton.setOnClickListener {
 
@@ -80,6 +94,7 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
             resourcesProvider,
             adapterListener = object : PostArticleListener {
                 override fun onClickItem(model: PostArticleModel) {
+
                 }
 
                 override fun onRemoveItem(model: PostArticleModel) {
@@ -132,6 +147,7 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
         )
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun notifyData() {
         tempImageListAdapter.notifyDataSetChanged()
     }
@@ -144,25 +160,29 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
                 is PostArticleState.Uninitialized -> Unit
                 is PostArticleState.Loading -> handleLoadingState()
                 is PostArticleState.Success -> handleSuccessState(it)
+                is PostArticleState.Finish -> handleFinishState()
+                is PostArticleState.Updated -> handleUpdatedState()
             }
         }
     }
 
     private fun handleLoadingState() {
-
+        binding.progressBar.isVisible = true
     }
 
     private fun handleSuccessState(state: PostArticleState.Success) {
+        binding.progressBar.isGone = true
         descAdapter.submitList(state.articleDescList)
         binding.recyclerView.smoothScrollToPosition(descAdapter.itemCount - 1)
 
         binding.addArticleButton.setOnClickListener {
 
+
             val title = binding.titleEditText.text.toString()
             val name = firebaseAuth.currentUser?.displayName.orEmpty()
             val userId = firebaseAuth.currentUser?.uid.orEmpty()
             val profileImage = firebaseAuth.currentUser?.photoUrl!!
-            val uploadedImageUriList : ArrayList<PostArticleModel> = arrayListOf()
+            val uploadedImageUriList : ArrayList<PostArticleModel> = arrayListOf() // imageList에서 실제로 본문에 삽입된 image들.
 
             // 실제로 본문에 삽입한 imageList
             state.articleDescList.forEach {
@@ -172,84 +192,33 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
             // 글 내용에 image가 들어있는 경우 image를 firebase storage에 우선 저장
             if(uploadedImageUriList.isNotEmpty()) {
-                lifecycleScope.launch {
-                    val results = uploadPhotoOnStorage(uploadedImageUriList)
-                    afterUploadPhoto(results, title, name, state.articleDescList, userId, profileImage)
+                articleId?.let {
+                    viewModel.updatedPhotoOnStorage(articleId!!, title, name, uploadedImageUriList, state.articleDescList, userId, profileImage)
+                }?: kotlin.run {
+                    viewModel.uploadPhotoOnStorage(title, name, uploadedImageUriList, state.articleDescList, userId, profileImage)
                 }
-            }
-            else {
-                uploadArticle(userId, title, name,  state.articleDescList, profileImage)
-            }
-
-        }
-
-    }
-    private suspend fun uploadPhotoOnStorage(modelList: ArrayList<PostArticleModel>) = withContext(Dispatchers.IO) {
-        val tempUriList : ArrayList<String> = arrayListOf()
-
-        modelList.forEach {
-            it.url?.let { url -> tempUriList.add(url) }
-        }
-
-
-        val uriList = tempUriList.toList()
-
-        val uploadedDeferred: List<Deferred<Any>> = uriList.mapIndexed { index, uri ->
-            lifecycleScope.async {
-                try {
-                    val fileName = "image${index}.png"
-                    return@async storage.reference.child("article/photo").child(fileName)
-                        .putFile(uri.toUri())
-                        .await()
-                        .storage
-                        .downloadUrl
-                        .await()
-                        .toString()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    return@async Pair(uri, e)
+            } else {
+                articleId?.let {
+                    viewModel.updateArticle(articleId!!, userId, title, state.articleDescList)
+                }?: kotlin.run {
+                    viewModel.uploadArticle(userId, title, name, state.articleDescList, profileImage)
                 }
             }
         }
-        return@withContext uploadedDeferred.awaitAll()
+
     }
 
-    private fun afterUploadPhoto(results: List<Any>, title: String, name: String, model: List<PostArticleModel>, userId: String, profileImage: Uri) {
-        val errorResults = results.filterIsInstance<Pair<Uri, Exception>>()
-        val successResults = results.filterIsInstance<String>()
-
-        // URL을 firestore에 적합한 타입으로 변경한다.
-        var e = 0
-        model.forEach {
-            if(it.type == CellType.ARTICLE_IMAGE_CELL) {
-                it.url = successResults[e]
-                e += 1
-            }
-        }
-
-        when {
-            errorResults.isNotEmpty() && successResults.isNotEmpty() -> {
-                //photoUploadErrorButContinurDialog(errorResults, successResults, title, model, userId)
-            }
-            errorResults.isNotEmpty() && successResults.isEmpty() -> {
-                //uploadError()
-            }
-            else -> {
-                uploadArticle(userId, title, name, model, profileImage)
-            }
-        }
-    }
-
-    private fun uploadArticle(userId: String, title: String, name: String, model: List<PostArticleModel>, profileImage: Uri) {
-
-        val article = ArticleEntity(userId, title, name, System.currentTimeMillis(), model, viewModel.year, viewModel.field, profileImage.toString())
-
-        firestore
-            .collection("article")
-            .add(article)
-
+    private fun handleFinishState() {
+        binding.progressBar.isGone = true
         finish()
+    }
 
+    private fun handleUpdatedState() {
+        binding.progressBar.isGone = true
+        startActivity(
+            MainActivity.newIntent(this)
+        )
+        finish()
     }
 
     // 저장소 권한 획득
@@ -324,9 +293,9 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 
     companion object {
 
-        fun newIntent(context: Context) =
+        fun newIntent(context: Context, articleId: String?) =
             Intent(context, PostArticleActivity::class.java).apply {
-
+                putExtra(DetailActivity.ARTICLE_KEY, articleId)
             }
 
         const val PERMISSION_REQUEST_CODE = 1000
