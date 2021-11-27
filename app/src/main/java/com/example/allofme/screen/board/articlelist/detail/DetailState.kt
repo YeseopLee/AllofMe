@@ -14,6 +14,8 @@ sealed class DetailState {
         val article: ArticleEntity
     ): DetailState()
 
+    object Finish: DetailState()
+
     data class Error(
         @StringRes val messageId: Int
     ): DetailState()

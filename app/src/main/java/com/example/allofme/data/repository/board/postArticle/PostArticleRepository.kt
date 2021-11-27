@@ -10,4 +10,6 @@ interface PostArticleRepository {
 
     suspend fun postStorage(modelList: ArrayList<PostArticleModel>): List<Any>
 
+    suspend fun updateArticle(articleId: String, userId: String, title: String, model: List<PostArticleModel>)
+
 }

@@ -69,7 +69,7 @@ class BoardFragment: BaseFragment<BoardViewModel,FragmentBoardBinding>() {
                 }
             }
         } else {
-            startActivity(PostArticleActivity.newIntent(requireContext()))
+            startActivity(PostArticleActivity.newIntent(requireContext(),null))
         }
     }
 

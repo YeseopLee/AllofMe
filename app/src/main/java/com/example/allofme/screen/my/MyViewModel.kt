@@ -6,7 +6,9 @@ import com.example.allofme.data.preference.MyPreferenceManager
 import com.example.allofme.data.repository.user.UserRepository
 import com.example.allofme.screen.base.BaseViewModel
 import com.example.allofme.screen.board.articlelist.FieldCategory
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -72,6 +74,7 @@ class MyViewModel(
     fun logOut() = viewModelScope.launch {
         withContext(Dispatchers.IO){
             myPreferenceManager.removeIdToken()
+            FirebaseAuth.getInstance().signOut()
         }
         fetchData()
     }

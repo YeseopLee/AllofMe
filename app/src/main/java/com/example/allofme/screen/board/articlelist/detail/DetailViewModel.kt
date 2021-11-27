@@ -1,21 +1,18 @@
 package com.example.allofme.screen.board.articlelist.detail
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.allofme.data.entity.ArticleEntity
 import com.example.allofme.data.repository.board.article.detail.DetailArticleRepository
 import com.example.allofme.model.CellType
-import com.example.allofme.model.board.article.detail.ArticleModel
 import com.example.allofme.screen.base.BaseViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class DetailViewModel(
     private val detailArticleRepository: DetailArticleRepository,
 ): BaseViewModel() {
 
     val detailArticleStateLiveData = MutableLiveData<DetailState>(DetailState.Uninitialized)
+    val isMeLiveData : MutableLiveData<Boolean> = MutableLiveData()
 
     override fun fetchData(): Job = viewModelScope.launch {
 
@@ -41,5 +38,20 @@ class DetailViewModel(
         detailArticleStateLiveData.value = DetailState.Success(
             article
         )
+    }
+
+    fun checkIsMe(articleId: String, userId: String) = viewModelScope.launch {
+
+        isMeLiveData.value = detailArticleRepository.getArticle(articleId).userId == userId
+    }
+
+    fun deleteArticle(articleId: String, userId: String) = viewModelScope.launch {
+
+        detailArticleStateLiveData.value = DetailState.Loading
+
+        detailArticleRepository.deleteArticle(articleId, userId)
+
+        detailArticleStateLiveData.value = DetailState.Finish
+
     }
 }

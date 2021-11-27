@@ -17,10 +17,4 @@ class BoardViewModel(
     override fun fetchData() = viewModelScope.launch {
 
     }
-
-    fun userInfoCheck(userId: String) = viewModelScope.launch {
-        boardStateLiveData.value = BoardState.Success(
-            userRepository.getUserInfo(userId)
-        )
-    }
 }
