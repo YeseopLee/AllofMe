@@ -1,5 +1,6 @@
 package com.example.allofme.screen.board.articlelist.detail
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -102,6 +103,7 @@ class DetailActivity : BaseActivity<DetailViewModel, ActivityDetailBinding>() {
         viewModel.isMeLiveData.observe(this) {
             when (it) {
                 true -> handleDialButton()
+                false -> Unit
             }
         }
     }
@@ -112,7 +114,7 @@ class DetailActivity : BaseActivity<DetailViewModel, ActivityDetailBinding>() {
     }
 
     private fun handleDialButton() {
-        binding.dialButton.isVisible = true
+        binding.buttonGroup.isVisible = true
         binding.dialButton.setOnClickListener {
             if(!clicked) {
                 binding.updateButton.animate().translationY(-resources.getDimension(R.dimen.update))
@@ -137,8 +139,14 @@ class DetailActivity : BaseActivity<DetailViewModel, ActivityDetailBinding>() {
     }
 
     private fun handleDeleteState() {
-        Toast.makeText(this,"글 정보를 불러올 수 없습니다.",Toast.LENGTH_SHORT).show()
-        finish()
+        AlertDialog.Builder(this)
+            .setMessage("글 정보를 불러올 수 없습니다.")
+            .setPositiveButton("돌아가기") { dialog, _ ->
+                dialog.dismiss()
+                finish()
+            }
+            .create()
+            .show()
     }
 
     private fun handleStateSuccess(state: DetailState.Success) = with(binding) {

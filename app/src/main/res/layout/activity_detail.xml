@@ -43,6 +43,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/buttonGroup"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:constraint_referenced_ids="deleteButton,updateButton,dialButton"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/deleteButton"
