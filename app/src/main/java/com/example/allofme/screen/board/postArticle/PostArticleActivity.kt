@@ -356,9 +356,6 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
 //            recyclerView.setItemViewCacheSize(vm.viewHolderCount) // 이미 생성됏지만 스크롤하여 사라진 viewholder를, 다시 나타날 때 다시 만드는것이 아니라 cache에 저장후 사용하게 해준다.
 //            vm.fetchData()
 //
-//            Log.e("testTExt",vm.postArticleLiveData.value?.first()?.text.toString())
-////            Log.e("testTExt",vm.postArticleLiveData.value?.get(2)?.text.toString())
-////            Log.e("testTExt",vm.postArticleLiveData.value?.get(4)?.text.toString())
 //        }
 //
 //
