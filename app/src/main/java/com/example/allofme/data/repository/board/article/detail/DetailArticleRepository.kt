@@ -5,4 +5,6 @@ import com.example.allofme.data.entity.ArticleEntity
 interface DetailArticleRepository {
 
     suspend fun getArticle(articleId: String): ArticleEntity
+
+    suspend fun deleteArticle(articleId: String, userId: String)
 }

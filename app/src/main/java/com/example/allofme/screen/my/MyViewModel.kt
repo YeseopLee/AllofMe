@@ -5,7 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.allofme.data.preference.MyPreferenceManager
 import com.example.allofme.data.repository.user.UserRepository
 import com.example.allofme.screen.base.BaseViewModel
+import com.example.allofme.screen.board.articlelist.FieldCategory
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -36,23 +39,42 @@ class MyViewModel(
         }
     }
 
-    fun setUserInfo(firebaseUser: FirebaseUser?) = viewModelScope.launch {
+    fun setInitUserInfo(firebaseUser: FirebaseUser?) = viewModelScope.launch {
 
         firebaseUser?.let { user ->
             myStateLiveData.value = MyState.Success.Registered(
-                userName = user.displayName ?: "???",
+                userName = user.displayName ?: "익명",
                 profileImageUri = user.photoUrl,
-                field = userRepository.getUserInfo(user.uid).field,
-                year = userRepository.getUserInfo(user.uid).year
+                field = userRepository.getUserInfo(user.uid).field ?: "ANDROID",
+                year = userRepository.getUserInfo(user.uid).year ?: "NEW"
+            )
+            setUserInfo(
+                user.uid,
+                user.displayName ?: "익명",
+                userRepository.getUserInfo(user.uid).field ?: "ANDROID",
+                userRepository.getUserInfo(user.uid).year ?: "NEW"
             )
         } ?: kotlin.run {
             myStateLiveData.value = MyState.Success.NotRegistered
         }
     }
 
+    fun setUserInfo(uid: String, name: String, field: String, year: String) = viewModelScope.launch {
+        userRepository.setUserInfo(uid, name, field, year)
+    }
+
+    fun setField(uid: String, name: String, field: String) = viewModelScope.launch {
+        userRepository.setField(uid, name, field)
+    }
+
+    fun setYear(uid: String, name: String, year: String) = viewModelScope.launch {
+        userRepository.setYear(uid, name, year)
+    }
+
     fun logOut() = viewModelScope.launch {
         withContext(Dispatchers.IO){
             myPreferenceManager.removeIdToken()
+            FirebaseAuth.getInstance().signOut()
         }
         fetchData()
     }

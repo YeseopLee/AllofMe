@@ -1,11 +1,14 @@
 package com.example.allofme.screen.main
 
+import android.app.Activity
+import android.content.Intent
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import com.example.allofme.R
 import com.example.allofme.databinding.ActivityMainBinding
 import com.example.allofme.screen.board.BoardFragment
 import com.example.allofme.screen.base.BaseActivity
+import com.example.allofme.screen.board.postArticle.gallery.GalleryActivity
 import com.example.allofme.screen.my.MyFragment
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -58,6 +61,10 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
                 .add(R.id.fragmentContainer, fragment, tag)
                 .commitAllowingStateLoss()
         }
+    }
+
+    companion object {
+        fun newIntent(activity: Activity) = Intent(activity, MainActivity::class.java)
     }
 
 }

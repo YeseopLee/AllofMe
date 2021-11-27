@@ -21,7 +21,11 @@ class ArticleListViewModel(
 
         articleListStateLiveData.value = ArticleListState.Loading
 
+        Log.e("start,","start")
+
         var articleList = articleListRepository.getList(fieldCategory)
+
+        Log.e("articleListIsWhat",articleList.toString())
 
         // Chip이 All이 아닐때, YearCategory에 따라서 필터링
         if(yearCategory != YearCategory.ALL) {

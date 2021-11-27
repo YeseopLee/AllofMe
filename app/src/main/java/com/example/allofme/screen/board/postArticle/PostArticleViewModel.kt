@@ -19,6 +19,7 @@ import com.example.allofme.data.repository.user.UserRepository
 import com.example.allofme.model.CellType
 import com.example.allofme.model.board.postArticle.PostArticleModel
 import com.example.allofme.screen.base.BaseViewModel
+import com.example.allofme.screen.board.articlelist.detail.DetailState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,13 +31,11 @@ import org.koin.android.ext.android.inject
 class PostArticleViewModel(
     private val userRepository: UserRepository,
     private val postArticleRepository: PostArticleRepository,
-    private val firebaseAuth: FirebaseAuth,
-    private val storage: FirebaseStorage,
-    private val fireStore: FirebaseFirestore
+    private val detailArticleRepository: DetailArticleRepository,
+    private val firebaseAuth: FirebaseAuth
 ) : BaseViewModel() {
 
     val postArticleStateLiveData = MutableLiveData<PostArticleState>(PostArticleState.Uninitialized)
-    val imageList = MutableLiveData<List<Any>>()
 
     var articleDescList: MutableList<PostArticleModel> = arrayListOf()
     var stringList: ArrayList<String> = arrayListOf()
@@ -60,19 +59,23 @@ class PostArticleViewModel(
     override fun fetchData(): Job = viewModelScope.launch {
         postArticleStateLiveData.value = PostArticleState.Loading
 
+        if(articleDescList.isNotEmpty()) {
+            postArticleStateLiveData.value = PostArticleState.Success(
+                articleDescList.map {
+                    PostArticleModel(
+                        id = it.id,
+                        type = it.type,
+                        text = it.text,
+                        url = it.url
+                    )
+                }
+            )
+        }
+    }
+
+    fun initData() = viewModelScope.launch {
         if(articleDescList.isEmpty()) articleDescList.add(PostArticleModel(id=0, type = CellType.ARTICLE_EDIT_CELL))
-
-        postArticleStateLiveData.value = PostArticleState.Success(
-            articleDescList.map {
-                PostArticleModel(
-                    id = it.id,
-                    type = it.type,
-                    text = it.text,
-                    url = it.url
-                )
-            }
-        )
-
+        fetchData()
     }
 
 
@@ -101,6 +104,8 @@ class PostArticleViewModel(
     }
 
     fun uploadPhotoOnStorage(title:String, name:String, imageList: ArrayList<PostArticleModel>, model: List<PostArticleModel>, userId:String, profileImage: Uri) = viewModelScope.launch {
+
+        postArticleStateLiveData.value = PostArticleState.Loading
 
         val result = postArticleRepository.postStorage(imageList)
 
@@ -135,8 +140,9 @@ class PostArticleViewModel(
     }
 
     fun uploadArticle(userId: String, title: String, name: String, model: List<PostArticleModel>, profileImage: Uri) = viewModelScope.launch {
-
+        postArticleStateLiveData.value = PostArticleState.Loading
         postArticleRepository.postArticle(userId, title, name, model, year, field, profileImage)
+        postArticleStateLiveData.value = PostArticleState.Finish
 
     }
 
@@ -166,6 +172,71 @@ class PostArticleViewModel(
         }
 
         fetchData()
+    }
+
+    fun getArticle(articleId: String) = viewModelScope.launch {
+
+        postArticleStateLiveData.value = PostArticleState.Loading
+
+        var article = detailArticleRepository.getArticle(articleId)
+
+        article.content.forEach {
+            articleDescList.add(
+                PostArticleModel(
+                    id = it.id,
+                    type = it.type,
+                    text = it.text,
+                    url = it.url
+                )
+            )
+        }
+
+        fetchData()
+    }
+
+    fun updatedPhotoOnStorage(articleId: String, title:String, name:String, imageList: ArrayList<PostArticleModel>, model: List<PostArticleModel>, userId:String, profileImage: Uri) = viewModelScope.launch {
+
+        postArticleStateLiveData.value = PostArticleState.Loading
+
+        val result = postArticleRepository.postStorage(imageList)
+
+        afterUpdatePhoto(articleId, result, title, name, model, userId, profileImage)
+
+    }
+
+    private fun afterUpdatePhoto(articleId: String, results: List<Any>, title: String, name: String, model: List<PostArticleModel>, userId: String, profileImage: Uri) {
+        val errorResults = results.filterIsInstance<Pair<Uri, Exception>>()
+        val successResults = results.filterIsInstance<String>()
+
+        // URL을 firestore에 적합한 타입으로 변경한다.
+
+        var e = 0
+        model.forEach {
+            if(it.type == CellType.ARTICLE_IMAGE_CELL) {
+                it.url = successResults[e]
+                e += 1
+            }
+        }
+
+        when {
+            errorResults.isNotEmpty() && successResults.isNotEmpty() -> {
+                //photoUploadErrorButContinurDialog(errorResults, successResults, title, model, userId)
+            }
+            errorResults.isNotEmpty() && successResults.isEmpty() -> {
+                //uploadError()
+            }
+            else -> {
+                updateArticle(articleId, userId, title, model)
+            }
+        }
+    }
+
+    fun updateArticle(articleId: String, userId: String, title: String, model: List<PostArticleModel>) = viewModelScope.launch {
+        postArticleStateLiveData.value = PostArticleState.Loading
+
+        postArticleRepository.updateArticle(articleId, userId, title, model)
+
+        postArticleStateLiveData.value = PostArticleState.Updated
     }
 
 }

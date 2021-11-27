@@ -12,5 +12,8 @@ sealed class PostArticleState {
         val articleDescList: List<PostArticleModel>
     ): PostArticleState()
 
+    object Finish : PostArticleState()
+
+    object Updated : PostArticleState()
 
 }
