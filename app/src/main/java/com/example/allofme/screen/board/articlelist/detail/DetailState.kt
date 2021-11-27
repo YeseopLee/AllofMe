@@ -16,6 +16,8 @@ sealed class DetailState {
 
     object Finish: DetailState()
 
+    object Deleted: DetailState()
+
     data class Error(
         @StringRes val messageId: Int
     ): DetailState()

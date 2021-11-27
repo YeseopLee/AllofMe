@@ -16,32 +16,35 @@ class DefaultDetailArticleRepository(
     private val fireStore: FirebaseFirestore
 ): DetailArticleRepository {
 
-    override suspend fun getArticle(articleId: String): ArticleEntity = withContext(ioDispatcher) {
+    override suspend fun getArticle(articleId: String): ArticleEntity? = withContext(ioDispatcher) {
 
-        lateinit var item: ArticleEntity
+        var item: ArticleEntity? = null
         fireStore
             .collection("article")
             .document(articleId)
             .get()
             .addOnSuccessListener { snapshot ->
-
-                item = ArticleEntity(
-                    userId = snapshot.get("userId") as String,
-                    name = snapshot.get("name") as String,
-                    title = snapshot.get("title") as String,
-                    createdAt = snapshot.get("createdAt") as Long,
-                    content = (snapshot.get("content") as ArrayList<Map<String, Any>>).map { article ->
-                        PostArticleModel(
-                            id = article.hashCode().toLong(),
-                            type = CellType.valueOf(article["type"].toString()),
-                            text = article["text"] as String?,
-                            url = article["url"] as String?
-                        )
-                    },
-                    year = snapshot.get("year") as String,
-                    field = snapshot.get("field") as String,
-                    profileImageUri = snapshot.get("profileImageUri") as String
-                )
+                snapshot.get("userId")?.let {
+                    item = ArticleEntity(
+                        userId = snapshot.get("userId") as String,
+                        name = snapshot.get("name") as String,
+                        title = snapshot.get("title") as String,
+                        createdAt = snapshot.get("createdAt") as Long,
+                        content = (snapshot.get("content") as ArrayList<Map<String, Any>>).map { article ->
+                            PostArticleModel(
+                                id = article.hashCode().toLong(),
+                                type = CellType.valueOf(article["type"].toString()),
+                                text = article["text"] as String?,
+                                url = article["url"] as String?
+                            )
+                        },
+                        year = snapshot.get("year") as String,
+                        field = snapshot.get("field") as String,
+                        profileImageUri = snapshot.get("profileImageUri") as String
+                    )
+                } ?: kotlin.run {
+                    item = null
+                }
             }
             .await()
 
