@@ -180,7 +180,7 @@ class PostArticleViewModel(
 
         var article = detailArticleRepository.getArticle(articleId)
 
-        article.content.forEach {
+        article?.content?.forEach {
             articleDescList.add(
                 PostArticleModel(
                     id = it.id,

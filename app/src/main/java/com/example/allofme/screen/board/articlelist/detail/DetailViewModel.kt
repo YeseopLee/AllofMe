@@ -25,8 +25,10 @@ class DetailViewModel(
 
         var article = detailArticleRepository.getArticle(articleId)
 
+        if(article == null) detailArticleStateLiveData.value = DetailState.Deleted
+
         // 글 읽기에 적합한 CellType으로 변경하기
-        article.content.forEach {
+        article?.content?.forEach {
             if (it.type == CellType.ARTICLE_EDIT_CELL) {
                 it.type = CellType.ARTICLE_DETAIL
             }
@@ -35,14 +37,16 @@ class DetailViewModel(
             }
         }
 
-        detailArticleStateLiveData.value = DetailState.Success(
-            article
-        )
+        detailArticleStateLiveData.value = article?.let {
+            DetailState.Success(
+                it
+            )
+        }
     }
 
     fun checkIsMe(articleId: String, userId: String) = viewModelScope.launch {
 
-        isMeLiveData.value = detailArticleRepository.getArticle(articleId).userId == userId
+        isMeLiveData.value = detailArticleRepository.getArticle(articleId)?.userId == userId
     }
 
     fun deleteArticle(articleId: String, userId: String) = viewModelScope.launch {

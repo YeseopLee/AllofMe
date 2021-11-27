@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -28,6 +29,7 @@ import com.example.allofme.screen.provider.ResourcesProvider
 import com.example.allofme.widget.adapter.ModelRecyclerAdapter
 import com.example.allofme.widget.adapter.listener.AdapterListener
 import com.example.allofme.widget.adapter.listener.board.BoardListListener
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.bind
@@ -93,6 +95,7 @@ class DetailActivity : BaseActivity<DetailViewModel, ActivityDetailBinding>() {
                 is DetailState.Loading -> handleStateLoading()
                 is DetailState.Success -> handleStateSuccess(it)
                 is DetailState.Error -> handleStateError(it)
+                is DetailState.Deleted -> handleDeleteState()
                 is DetailState.Finish -> handleFinishState()
             }
         }
@@ -133,6 +136,11 @@ class DetailActivity : BaseActivity<DetailViewModel, ActivityDetailBinding>() {
             finish() },500)
     }
 
+    private fun handleDeleteState() {
+        Toast.makeText(this,"글 정보를 불러올 수 없습니다.",Toast.LENGTH_SHORT).show()
+        finish()
+    }
+
     private fun handleStateSuccess(state: DetailState.Success) = with(binding) {
         binding.progressBar.isGone = true
         titleTextView.text = state.article.title
@@ -140,7 +148,8 @@ class DetailActivity : BaseActivity<DetailViewModel, ActivityDetailBinding>() {
         adapter.submitList(state.article.content)
     }
 
-    private fun handleStateError(state: DetailState.Error) {}
+    private fun handleStateError(state: DetailState.Error) {
+    }
 
     companion object {
         fun newIntent(context: Context, articleId: String) =
