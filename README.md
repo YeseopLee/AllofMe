@@ -11,7 +11,8 @@ Coroutines, Koin, View-Binding
 
 ## 동작
 
-![Flow](https://user-images.githubusercontent.com/67935576/143563620-227b38ad-8220-4152-bdc0-60abb84fb091.gif)![Flow2](https://user-images.githubusercontent.com/67935576/143571787-2324e17e-9a60-49b5-82a0-d86167722a70.gif)![Flow3](https://user-images.githubusercontent.com/67935576/143681339-2e99428c-99aa-4fac-bd37-dbf93a62f281.gif)![AlertLogin](https://user-images.githubusercontent.com/67935576/143571608-a1b6cea3-b090-4170-841c-c26893de10cf.png)![AlertField](https://user-images.githubusercontent.com/67935576/143571611-61b8966c-abc4-4dfe-88dc-90872052081d.png)![cantload](https://user-images.githubusercontent.com/67935576/143686593-7e425233-636c-4222-8375-a87d4262416d.png)
+![Flow](https://user-images.githubusercontent.com/67935576/143563620-227b38ad-8220-4152-bdc0-60abb84fb091.gif)![Flow3](https://user-images.githubusercontent.com/67935576/143681339-2e99428c-99aa-4fac-bd37-dbf93a62f281.gif)
+![AlertField](https://user-images.githubusercontent.com/67935576/143571611-61b8966c-abc4-4dfe-88dc-90872052081d.png)![cantload](https://user-images.githubusercontent.com/67935576/143686593-7e425233-636c-4222-8375-a87d4262416d.png)
 
 
 ## 구현
@@ -70,6 +71,12 @@ RecyclerView를 동적으로 생성, 삭제하는 과정에서 data의 fetch를 
 기획 단계에서 데이터 모델의 구조에 대하여 좀 더 깊은 고민을 하면 좋을듯. 프로젝트 규모가 커질수록 모델의 구조를 변경하는 경우가 빈번하게 일어났다.
 
 EditText를 동적으로 계속 생성해야할 일이 있으면 ViewBinding 대신 DataBinding을 활용하는것이 더 깔끔하고 쉽게 설계할 수 있을것 같다.
+
+이전에 토이프로젝트로 RESTful Api를 기반으로 커뮤니티형 앱 [LIFO](https://github.com/YeseopLee/LIFO)를 만든적이 있는데, 당시에는 아키텍쳐에 대한 설계없이 기능구현 후 -> MVVM 패턴으로 리팩토링하여 진행하였다. 그때는 오히려 관리해야할 파일들만 늘어나고 구조가 더 복잡해보이기만 해서 아키텍쳐 설계에 대해 큰 감흥이 없었는데, 아키텍쳐를 먼저 셋업하고 정해진 모듈에 따라 기능들을 이어붙여 나가니 개발 속도도 오르는것 같고, 코드를 전체적으로 훨씬 깔끔하게 개발할 수 있게 돼었다. 
+
+대부분 개발을 혼자서 하다보니 깃허브를 단순히 저장소로만 사용하고 있었는데, 처음으로 issue와 projects의 칸반보드를 사용해보았다. 프로젝트가 진행되면서는 어느정도 기능별로 브랜치를 나누는 등 관리가 다소 쉬워졌지만, 초기 셋업단계에서는 브랜치를 확실하게 나누는것이 아직 좀 익숙하지 않다. 그래도 언제라도 다른 개발자와 같이 작업할 때를 대비하여 깃허브로 프로젝트를 관리하는 법에 계속 익숙해져야겠다.
+
+
 
 
 
