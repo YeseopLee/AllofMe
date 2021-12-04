@@ -66,7 +66,7 @@ view-viewModel의 분리에 영향을 미치지 않고 코드를 크게 건드�
 ## 후기
 
 RecyclerView를 동적으로 생성, 삭제하는 과정에서 data의 fetch를 계속 반복하다보니, ImageView를 삭제, 추가할 때 본문 전체가 새로이 fetch되어
-사용자 경험이 떨어질 수 있어 보인다.
+사용자 경험이 떨어질 수 있어 보인다. -> recyclerview의 notifydatasetChanged 대신 notifyitemInserted함수를 활용하면 추가되는 item에 대해서만 갱신한다.
 
 기획 단계에서 데이터 모델의 구조에 대하여 좀 더 깊은 고민을 하면 좋을듯. 프로젝트 규모가 커질수록 모델의 구조를 변경하는 경우가 빈번하게 일어났다.
 
