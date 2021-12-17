@@ -8,6 +8,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -173,10 +175,11 @@ class PostArticleActivity : BaseActivity<PostArticleViewModel, ActivityPostArtic
     private fun handleSuccessState(state: PostArticleState.Success) {
         binding.progressBar.isGone = true
         descAdapter.submitList(state.articleDescList)
-        binding.recyclerView.smoothScrollToPosition(descAdapter.itemCount - 1)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.recyclerView.smoothScrollToPosition(descAdapter.itemCount - 1) },300)
 
         binding.addArticleButton.setOnClickListener {
-
 
             val title = binding.titleEditText.text.toString()
             val name = firebaseAuth.currentUser?.displayName.orEmpty()
