@@ -13,6 +13,9 @@ Coroutines, Koin, View-Binding
 
 #### 글쓰기 및 수정, 삭제 동작 모습
 ![Flow](https://user-images.githubusercontent.com/67935576/143563620-227b38ad-8220-4152-bdc0-60abb84fb091.gif)![Flow3](https://user-images.githubusercontent.com/67935576/143681339-2e99428c-99aa-4fac-bd37-dbf93a62f281.gif)
+#### loading shimmer
+![shimmer](https://user-images.githubusercontent.com/67935576/146502383-db987a86-6b87-4271-a1e4-4628cd06e01e.gif)
+
 ![AlertField](https://user-images.githubusercontent.com/67935576/143571611-61b8966c-abc4-4dfe-88dc-90872052081d.png)![cantload](https://user-images.githubusercontent.com/67935576/143686593-7e425233-636c-4222-8375-a87d4262416d.png)
 
 
@@ -22,7 +25,8 @@ Coroutines, Koin, View-Binding
 RecyclerView를 활용하여, EditText와 ImageView를 동적으로 생성, 삭제 하여 해당 기능을 구현하였다.\
 이 과정에서 반복되는 RecyclerView활용으로, adpater의 재사용 및 viewHolder 구분을 위해 enum class로 CellType을 정의하여 분기하여 활용하였다.\
 GOF State패턴을 적용하여 view에서 viewModel 로직의 State를 observing 하여 로직 상태에 따라 ui의 상태를 변화시킨다.\
-게시물 클릭시 id를 조회하여 본인일 경우 수정 및 삭제 플로팅 버튼이 나타난다.
+게시물 클릭시 id를 조회하여 본인일 경우 수정 및 삭제 플로팅 버튼이 나타난다.\
+추후 데이터가 많아졌을 때 로딩속도를 고려하여 loading shimmer를 추가하였다. 현재는 직관적으로 보여주기 위해 일부러 dealy를 걸어놓았다.
 
 
 ## 이슈
