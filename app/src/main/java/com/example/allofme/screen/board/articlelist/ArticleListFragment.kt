@@ -1,5 +1,7 @@
 package com.example.allofme.screen.board.articlelist
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
@@ -70,18 +72,30 @@ class ArticleListFragment: BaseFragment<ArticleListViewModel, FragmentArticleLis
     }
 
     private fun handleStateLoading() {
-        binding.progressBar.isVisible = true
+        showShimmer(true)
     }
 
     private fun handleStateSuccess(state: ArticleListState.Success) {
-        binding.progressBar.isGone = true
+        Handler(Looper.getMainLooper()).postDelayed({
+            showShimmer(false) },1000)
         adapter.submitList(state.articleList)
     }
 
     private fun handleStateError(state: ArticleListState.Error) {
-        binding.progressBar.isGone = true
+        showShimmer(false)
     }
 
+    private fun showShimmer(isLoading: Boolean) {
+        if(isLoading) {
+            binding.shimmer.startShimmer()
+            binding.shimmer.isVisible = true
+            binding.recyclerView.isGone = true
+        } else {
+            binding.shimmer.stopShimmer()
+            binding.shimmer.isGone = true
+            binding.recyclerView.isVisible = true
+        }
+    }
 
     companion object {
         const val FIELD_CATEGORY_KEY = "fieldCategory"
