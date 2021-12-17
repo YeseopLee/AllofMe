@@ -130,6 +130,7 @@ class DetailActivity : BaseActivity<DetailViewModel, ActivityDetailBinding>() {
 
     private fun handleStateLoading() {
         binding.progressBar.isVisible = true
+        showShimmer(true)
     }
 
     private fun handleFinishState() {
@@ -154,6 +155,19 @@ class DetailActivity : BaseActivity<DetailViewModel, ActivityDetailBinding>() {
         titleTextView.text = state.article.title
 
         adapter.submitList(state.article.content)
+        showShimmer(false)
+    }
+
+    private fun showShimmer(isLoading: Boolean) {
+        if(isLoading) {
+            binding.shimmer.startShimmer()
+            binding.shimmer.isVisible = true
+            binding.recyclerView.isGone = true
+        } else {
+            binding.shimmer.stopShimmer()
+            binding.shimmer.isGone = true
+            binding.recyclerView.isVisible = true
+        }
     }
 
     private fun handleStateError(state: DetailState.Error) {
