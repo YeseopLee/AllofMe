@@ -15,7 +15,7 @@ Coroutines, Koin, View-Binding
 ![Flow](https://user-images.githubusercontent.com/67935576/143563620-227b38ad-8220-4152-bdc0-60abb84fb091.gif)![Flow3](https://user-images.githubusercontent.com/67935576/143681339-2e99428c-99aa-4fac-bd37-dbf93a62f281.gif)
 #### loading shimmer
 ![shimmer](https://user-images.githubusercontent.com/67935576/146502383-db987a86-6b87-4271-a1e4-4628cd06e01e.gif)
-
+#### 개인 정보 수정 및 삭제된 게시물 조회시
 ![AlertField](https://user-images.githubusercontent.com/67935576/143571611-61b8966c-abc4-4dfe-88dc-90872052081d.png)![cantload](https://user-images.githubusercontent.com/67935576/143686593-7e425233-636c-4222-8375-a87d4262416d.png)
 
 
